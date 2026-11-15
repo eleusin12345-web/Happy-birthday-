@@ -1175,6 +1175,65 @@
     }
 
     /* ==========================================================================
+       9.3. МОДАЛЬНОЕ ОКНО ЭКСПОРТА ГОТОВОГО INDEX.HTML СО ВСТРОЕННЫМИ ФОТО
+       ========================================================================== */
+    .export-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 4900;
+      background: rgba(19, 38, 66, 0.76);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .export-modal-overlay.open {
+      display: flex;
+    }
+
+    .export-modal-card {
+      width: 100%;
+      max-width: 520px;
+      background: var(--paper-white);
+      border: 2px solid var(--ink);
+      border-radius: 20px;
+      padding: 26px 24px;
+      box-shadow: 0 24px 56px rgba(10, 22, 42, 0.45);
+      position: relative;
+    }
+
+    .export-modal-title {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: 1.15rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+    }
+
+    .export-modal-text {
+      font-size: 0.94rem;
+      line-height: 1.5;
+      color: var(--charcoal);
+      margin-bottom: 16px;
+    }
+
+    .export-status-list {
+      background: var(--paper);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
        10. ЭКРАН 5: ЭПИЧНЫЙ ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ПРОИГРЫВАТЕЛЬ
        ========================================================================== */
     .cake-confetti-layer {
@@ -1219,7 +1278,6 @@
       z-index: 5;
     }
 
-    /* Торжественный баннер-шапка над сценой торта */
     .cake-stage-banner {
       display: inline-flex;
       align-items: center;
@@ -1519,7 +1577,6 @@
       50% { transform: rotate(1.4deg); }
     }
 
-    /* Тёплое свечение вокруг свечей (уходит, когда свечи задуты) */
     .candle-halo {
       transition: opacity 0.4s ease;
       animation: haloPulse 1.4s ease-in-out infinite alternate;
@@ -1811,7 +1868,6 @@
       text-align: center;
     }
 
-    /* Эквалайзер из 4 столбцов рядом со статусом музыки */
     .eq-bars {
       display: inline-flex;
       align-items: flex-end;
@@ -2067,7 +2123,7 @@
        ВЕРХНЯЯ ПАНЕЛЬ НАВИГАЦИИ
        ======================================================================== -->
   <header class="navbar">
-    <div class="nav-brand" onclick="navigateTo('cover')" title="На главную">
+    <div class="nav-brand" id="navBrandTrigger" onclick="navigateTo('cover')" title="На главную">
       <span class="nav-brand-tag">ДИАС</span>
       <span class="nav-brand-text">Открытка ко дню рождения</span>
     </div>
@@ -2088,13 +2144,30 @@
   <div id="toastBanner" class="toast-banner" role="status" aria-live="polite"></div>
 
   <!-- ========================================================================
+       СКРЫТОЕ ОКНО ЭКСПОРТА ГОТОВОГО INDEX.HTML С ВШИТЫМИ ФОТО ДЛЯ GITHUB
+       (открывается при удержании кнопки «ДИАС» в шапке 1.5 сек или по ?edit=1)
+       ======================================================================== -->
+  <div id="exportModalOverlay" class="export-modal-overlay" role="dialog" aria-modal="true">
+    <div class="export-modal-card">
+      <button type="button" class="quiz-close-x" onclick="closeExportModal()" aria-label="Закрыть">×</button>
+      <h3 class="export-modal-title">Сохранить сайт с фото для GitHub</h3>
+      <p class="export-modal-text">
+        Фотографии, выбранные на телефоне, хранятся только в памяти этого браузера. Нажми кнопку ниже — скачается готовый <b>index.html</b>, в который все твои фото уже вшиты внутрь кода. Просто загрузи его в GitHub, и фото откроются на любом телефоне!
+      </p>
+      <div class="export-status-list" id="exportPhotoStatusList"></div>
+      <button type="button" class="btn-primary" onclick="downloadEmbeddedHtml()" style="width: 100%;">
+        📥 Скачать готовый index.html с фото
+      </button>
+    </div>
+  </div>
+
+  <!-- ========================================================================
        МОДАЛЬНОЕ ОКНО: СЕКРЕТНЫЙ ТЕСТ НА ТУРЕЦКОМ + КУПЮРА 25 000 ТЕНГЕ
        ======================================================================== -->
   <div id="turkishQuizOverlay" class="secret-quiz-overlay" role="dialog" aria-modal="true" aria-labelledby="turkishQuizTitle">
     <div class="secret-quiz-modal">
       <button type="button" class="quiz-close-x" onclick="closeTurkishQuiz()" aria-label="Kapat">×</button>
 
-      <!-- Шаг 1: Вопрос на турецком языке -->
       <div id="quizQuestionStep">
         <span class="quiz-turkish-badge">GİZLİ SORU • TÜRKİYE TESTİ</span>
         <h3 class="quiz-turkish-question" id="turkishQuizTitle">
@@ -2124,11 +2197,9 @@
         </div>
       </div>
 
-      <!-- Шаг 2 (при правильном ответе): Купюра 25 000 тг + "Сфоткай и скинь маме" -->
       <div id="quizRewardStep" class="reward-banknote-box" style="display: none;">
         <span class="quiz-turkish-badge" style="background: #15803D;">TEBRİKLER! DOĞRU CEVAP!</span>
 
-        <!-- Дизайнерская юбилейная купюра 25 000 ТЕҢГЕ -->
         <div class="banknote-svg-frame">
           <svg viewBox="0 0 640 310" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Купюра 25 000 тенге для Диаса">
             <defs>
@@ -2220,12 +2291,10 @@
          ====================================================================== -->
     <section id="screen-cover" class="screen bg-cover active">
       <div class="cover-grid">
-        <!-- Левая колонка: Редакционный заголовок + Стикер кота в колпаке -->
         <div class="cover-left">
           <span class="cover-kicker">Специальный выпуск</span>
           <h1 class="cover-title" id="coverMainTitle">С ДНЁМ РОЖДЕНИЯ,<br>ДИАС!</h1>
 
-          <!-- Иллюстрация кота в праздничном колпаке в стиле вырезного бумажного стикера -->
           <svg class="cat-sticker" viewBox="0 0 360 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Кот в праздничном колпаке">
             <g fill="#4A6FA5" opacity="0.45">
               <g transform="translate(46, 86) rotate(-24)">
@@ -2283,7 +2352,6 @@
           </svg>
         </div>
 
-        <!-- Правая колонка: Карточка с подарочной коробкой и кнопкой -->
         <div class="cover-right anim-slide-up" style="animation-delay: 0.16s;">
           <div class="edition-stamp">НОВЫЙ УРОВЕНЬ</div>
 
@@ -2574,14 +2642,12 @@
          ЭКРАН 5: ЭПИЧНЫЙ ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ПРОИГРЫВАТЕЛЬ
          ====================================================================== -->
     <section id="screen-cake" class="screen bg-stripes">
-      <!-- Волнистый бордюр сверху -->
       <div class="top-valance anim-drop-down" aria-hidden="true">
         <svg width="100%" height="36" preserveAspectRatio="none" viewBox="0 0 1200 36">
           <path d="M0,0 L1200,0 L1200,20 Q1150,36 1100,20 Q1050,36 1000,20 Q950,36 900,20 Q850,36 800,20 Q750,36 700,20 Q650,36 600,20 Q550,36 500,20 Q450,36 400,20 Q350,36 300,20 Q250,36 200,20 Q150,36 100,20 Q50,36 0,20 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
         </svg>
       </div>
 
-      <!-- Праздничная гирлянда из бумажных флажков -->
       <div class="party-garland garland-sway" aria-hidden="true">
         <svg width="100%" height="62" preserveAspectRatio="none" viewBox="0 0 1200 62" fill="none">
           <path d="M-10 8 Q300 44 600 18 Q900 44 1210 8" stroke="#1B365D" stroke-width="2.5"/>
@@ -2601,14 +2667,12 @@
       </div>
 
       <div class="cake-screen-wrapper">
-        <!-- Торжественная лента-заголовок -->
         <div class="cake-stage-banner anim-drop-down" style="animation-delay: 0.06s;">
           <span class="cake-stage-banner-dot"></span>
           <span class="cake-stage-banner-text">Главный праздничный стол • Диас</span>
           <span class="cake-stage-banner-dot"></span>
         </div>
 
-        <!-- Верхняя сцена: 3 рамки для фото слева + Эпичный трёхъярусный торт справа -->
         <div class="cake-top-stage">
           <!-- Блок для 3 фотографий -->
           <div class="photo-gallery-zone">
@@ -2685,7 +2749,6 @@
                   </radialGradient>
                 </defs>
 
-                <!-- Связки воздушных шаров по обе стороны торта -->
                 <path d="M68 188 Q84 245 96 310" stroke="#1B365D" stroke-width="2"/>
                 <path d="M42 224 Q68 270 92 318" stroke="#1B365D" stroke-width="2" stroke-dasharray="4 3"/>
                 <g class="balloon-float-slow">
@@ -2704,15 +2767,12 @@
                   <ellipse cx="504" cy="182" rx="24" ry="31" transform="rotate(20 504 182)" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
                 </g>
 
-                <!-- Тёплый ореол света от горящих свечей -->
                 <ellipse class="candle-halo" cx="270" cy="112" rx="138" ry="56" fill="url(#candleWarmGlow)"/>
 
-                <!-- Праздничный топпер-растяжка на двух деревянных шпажках -->
                 <g class="cake-topper-flag">
                   <line x1="176" y1="34" x2="176" y2="128" stroke="#8C6D46" stroke-width="3.5" stroke-linecap="round"/>
                   <line x1="364" y1="34" x2="364" y2="128" stroke="#8C6D46" stroke-width="3.5" stroke-linecap="round"/>
                   <path d="M176 42 Q270 60 364 42" stroke="#1B365D" stroke-width="2.5" fill="none"/>
-                  <!-- Флажки топпера с буквами Д И А С -->
                   <g transform="translate(194, 45) rotate(5)">
                     <polygon points="0,0 32,0 16,32" fill="#1B365D"/>
                     <text x="16" y="17" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="800" font-size="11">Д</text>
@@ -2731,36 +2791,26 @@
                   </g>
                 </g>
 
-                <!-- Блюдо и массивная ножка-подставка -->
                 <ellipse cx="270" cy="390" rx="194" ry="20" fill="#FCFBF9" stroke="#1B365D" stroke-width="3"/>
                 <path d="M236 392 L222 414 L318 414 L304 392 Z" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
                 <rect x="202" y="412" width="136" height="10" rx="5" fill="#1B365D"/>
 
-                <!-- 1-Й (НИЖНИЙ) БОЛЬШОЙ ЯРУС -->
                 <rect x="104" y="294" width="332" height="94" rx="18" fill="#1B365D" stroke="#132642" stroke-width="3"/>
-                <!-- Кремовые подтёки на нижнем ярусе -->
                 <path d="M106 310 Q132 332 158 310 Q184 334 210 310 Q236 332 262 310 Q288 334 314 310 Q340 332 366 310 Q392 334 434 310 L434 302 Q434 294 416 294 L124 294 Q106 294 106 302 Z" fill="#FCFBF9"/>
-                <!-- Декоративная гирлянда из кремовых бусин по нижнему ярусу -->
                 <path d="M118 358 Q156 376 194 358 Q232 376 270 358 Q308 376 346 358 Q384 376 422 358" stroke="#D5C3AA" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round"/>
 
-                <!-- 2-Й (СРЕДНИЙ) ЯРУС -->
                 <rect x="142" y="206" width="256" height="88" rx="16" fill="#4A6FA5" stroke="#1B365D" stroke-width="3"/>
                 <path d="M144 222 Q168 242 192 222 Q216 244 240 222 Q264 242 288 222 Q312 244 336 222 Q360 242 396 222 L396 214 Q396 206 378 206 L162 206 Q144 206 144 214 Z" fill="#DCE6F2"/>
-                <!-- Табличка "С ДНЁМ РОЖДЕНИЯ" на среднем ярусе -->
                 <rect x="174" y="246" width="192" height="34" rx="9" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
                 <text x="270" y="268" text-anchor="middle" fill="#1B365D" font-family="Unbounded" font-weight="800" font-size="12" letter-spacing="0.5">С ДНЁМ РОЖДЕНИЯ</text>
 
-                <!-- 3-Й (ВЕРХНИЙ) ЯРУС -->
                 <rect x="182" y="130" width="176" height="76" rx="15" fill="#8DA9C4" stroke="#1B365D" stroke-width="3"/>
                 <path d="M184 144 Q206 162 228 144 Q250 164 272 144 Q294 162 316 144 Q338 164 356 144 L356 138 Q356 130 340 130 L200 130 Q184 130 184 138 Z" fill="#FCFBF9"/>
-                <!-- Ягоды/акценты на стыках ярусов -->
                 <circle cx="152" cy="204" r="6" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
                 <circle cx="388" cy="204" r="6" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
                 <circle cx="116" cy="292" r="7" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
                 <circle cx="424" cy="292" r="7" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
 
-                <!-- ПЯТЬ ПОЛОСАТЫХ СВЕЧЕЙ НА ВЕРХНЕМ ЯРУСЕ -->
-                <!-- Свеча 1 -->
                 <g transform="translate(202, 86)">
                   <rect x="0" y="14" width="11" height="30" rx="3" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.2"/>
                   <path d="M1 22 L10 17 M1 32 L10 27" stroke="#4A6FA5" stroke-width="2.5"/>
@@ -2768,7 +2818,6 @@
                   <path class="smoke-trail" d="M5.5 8 Q1 0 6 -10 Q10 -20 5 -30" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                 </g>
 
-                <!-- Свеча 2 -->
                 <g transform="translate(232, 80)">
                   <rect x="0" y="14" width="11" height="36" rx="3" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.2"/>
                   <path d="M1 22 L10 17 M1 32 L10 27 M1 42 L10 37" stroke="#1B365D" stroke-width="2.5"/>
@@ -2776,7 +2825,6 @@
                   <path class="smoke-trail" d="M5.5 8 Q10 -2 5 -12 Q1 -22 6 -32" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                 </g>
 
-                <!-- Свеча 3 (Центральная высокая) -->
                 <g transform="translate(264, 72)">
                   <rect x="0" y="14" width="12" height="44" rx="3.5" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
                   <path d="M1 23 L11 18 M1 34 L11 29 M1 45 L11 40" stroke="#E07A5F" stroke-width="2.8"/>
@@ -2784,7 +2832,6 @@
                   <path class="smoke-trail" d="M6 8 Q1 -4 7 -15 Q12 -26 6 -38" stroke="#64748B" stroke-width="2.8" stroke-linecap="round" fill="none"/>
                 </g>
 
-                <!-- Свеча 4 -->
                 <g transform="translate(297, 80)">
                   <rect x="0" y="14" width="11" height="36" rx="3" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.2"/>
                   <path d="M1 22 L10 17 M1 32 L10 27 M1 42 L10 37" stroke="#1B365D" stroke-width="2.5"/>
@@ -2792,7 +2839,6 @@
                   <path class="smoke-trail" d="M5.5 8 Q1 -2 6 -12 Q10 -22 5 -32" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                 </g>
 
-                <!-- Свеча 5 -->
                 <g transform="translate(327, 86)">
                   <rect x="0" y="14" width="11" height="30" rx="3" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.2"/>
                   <path d="M1 22 L10 17 M1 32 L10 27" stroke="#4A6FA5" stroke-width="2.5"/>
@@ -2802,7 +2848,6 @@
               </svg>
             </div>
 
-            <!-- Кнопка управления свечами под тортом -->
             <div class="cake-action-row">
               <button type="button" class="btn-blow-candles" id="blowCandlesBtn" onclick="toggleCandles()">
                 <span id="blowCandlesIcon">💨</span>
@@ -2839,7 +2884,6 @@
           <div class="vinyl-box-tray">
             <div class="music-notes-layer" id="musicNotesLayer"></div>
 
-            <!-- Подвижный тонарм (звукосниматель) проигрывателя -->
             <svg class="turntable-tonearm" id="vinylTonearm" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <circle cx="42" cy="18" r="12" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5"/>
               <circle cx="42" cy="18" r="5" fill="#1B365D"/>
@@ -2895,13 +2939,13 @@
 
   <script>
     /* ========================================================================
-       НАСТРОЙКИ САЙТА (CONFIG) — ТВОИ 3 ФОТОГРАФИИ И ТЕКСТЫ ДЛЯ ДИАСА
+       НАСТРОЙКИ САЙТА (CONFIG) — ИМЕНА ФАЙЛОВ ДЛЯ GITHUB И ТЕКСТЫ ДЛЯ ДИАСА
        ======================================================================== */
     const CONFIG = {
       photos: {
-        photo1: "1000080928.jpg", // Первая рамка Polaroid (портрет Диаса на закате)
-        photo2: "1000080930.jpg", // Вторая рамка Polaroid (совместное фото вдвоём)
-        photo3: "1000080945.jpg"  // Овальная рамка-ЗЕРКАЛО (детское фото, где вы маленькие)
+        photo1: "photo1.jpg", // Первая рамка Polaroid (загрузи photo1.jpg в репозиторий GitHub)
+        photo2: "photo2.jpg", // Вторая рамка Polaroid (загрузи photo2.jpg в репозиторий GitHub)
+        photo3: "photo3.jpg"  // Овальная рамка-ЗЕРКАЛО (загрузи photo3.jpg в репозиторий GitHub)
       },
       texts: {
         coverTitle: "С ДНЁМ РОЖДЕНИЯ,\nДИАС!",
@@ -3083,17 +3127,41 @@
     }
 
     /* ========================================================================
-       3. РАБОТА С ФОТОГРАФИЯМИ (CONFIG + LOCALSTORAGE + ВЫБОР С УСТРОЙСТВА)
+       3. РАБОТА С ФОТОГРАФИЯМИ (УМНЫЙ АВТОПОДБОР ДЛЯ GITHUB + LOCALSTORAGE + ЭКСПОРТ)
        ======================================================================== */
     let activePhotoSlotKey = null;
     const STORAGE_PREFIX = 'dias_card_photo_';
 
-    function renderPhotoInSlot(slotKey, imageSrc, fallbackSrc = '') {
+    function buildCandidateUrls(primarySrc) {
+      if (!primarySrc) return [];
+      if (primarySrc.startsWith('data:') || primarySrc.startsWith('http://') || primarySrc.startsWith('https://')) {
+        return [primarySrc];
+      }
+      const dotIndex = primarySrc.lastIndexOf('.');
+      if (dotIndex === -1) return [primarySrc];
+
+      const base = primarySrc.slice(0, dotIndex);
+      const ext = primarySrc.slice(dotIndex);
+      const variants = [
+        primarySrc,
+        base + ext.toUpperCase(),
+        base + '.jpg',
+        base + '.JPG',
+        base + '.jpeg',
+        base + '.JPEG',
+        base + '.png',
+        base + '.PNG'
+      ];
+      return [...new Set(variants)];
+    }
+
+    function renderPhotoFromCandidates(slotKey, candidates, index = 0) {
+      if (!candidates || index >= candidates.length) return;
       const container = document.getElementById('slot-' + slotKey);
-      if (!container || !imageSrc) return;
+      if (!container) return;
 
       const img = document.createElement('img');
-      img.src = imageSrc;
+      img.src = candidates[index];
       img.alt = slotKey === 'photo3' ? 'Детское фото Диаса' : 'Фото с Диасом';
 
       img.onload = function () {
@@ -3102,9 +3170,7 @@
       };
 
       img.onerror = function () {
-        if (fallbackSrc) {
-          renderPhotoInSlot(slotKey, fallbackSrc, '');
-        }
+        renderPhotoFromCandidates(slotKey, candidates, index + 1);
       };
     }
 
@@ -3140,11 +3206,17 @@
         }
 
         const configUrl = (CONFIG.photos[key] || '').trim();
+        const candidateList = [];
 
         if (savedDataUrl) {
-          renderPhotoInSlot(key, savedDataUrl, configUrl);
-        } else if (configUrl) {
-          renderPhotoInSlot(key, configUrl, '');
+          candidateList.push(savedDataUrl);
+        }
+        if (configUrl) {
+          candidateList.push(...buildCandidateUrls(configUrl));
+        }
+
+        if (candidateList.length > 0) {
+          renderPhotoFromCandidates(key, candidateList, 0);
         }
       });
     }
@@ -3164,7 +3236,7 @@
       reader.onload = function (e) {
         const tempImg = new Image();
         tempImg.onload = function () {
-          const maxSide = 760;
+          const maxSide = 720;
           let width = tempImg.width;
           let height = tempImg.height;
 
@@ -3184,12 +3256,12 @@
           const ctx = canvas.getContext('2d');
           ctx.drawImage(tempImg, 0, 0, width, height);
 
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
-          renderPhotoInSlot(activePhotoSlotKey, compressedDataUrl);
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+          renderPhotoFromCandidates(activePhotoSlotKey, [compressedDataUrl], 0);
 
           try {
             localStorage.setItem(STORAGE_PREFIX + activePhotoSlotKey, compressedDataUrl);
-            showToast('Фото добавлено и сохранено');
+            showToast('Фото добавлено! Чтобы оно появилось на других телефонах, зажми «ДИАС» вверху');
           } catch (err) {
             showToast('Фото добавлено в рамку');
           }
@@ -3198,6 +3270,96 @@
       };
       reader.readAsDataURL(file);
     });
+
+    /* ========================================================================
+       3.1. ЭКСПОРТ ГОТОВОГО INDEX.HTML СО ВШИТЫМИ ФОТОГРАФИЯМИ
+       ======================================================================== */
+    function openExportModal() {
+      const listEl = document.getElementById('exportPhotoStatusList');
+      if (listEl) {
+        const labels = {
+          photo1: 'Фото 1 (Polaroid сверху)',
+          photo2: 'Фото 2 (Polaroid снизу)',
+          photo3: 'Фото 3 (Детское в зеркале)'
+        };
+        listEl.innerHTML = ['photo1', 'photo2', 'photo3'].map(k => {
+          const hasLocal = !!(localStorage.getItem(STORAGE_PREFIX + k) || (CONFIG.photos[k] || '').startsWith('data:'));
+          return `<div>${hasLocal ? '✅' : '⚠️'} ${labels[k]}: ${hasLocal ? 'готово к вшиванию в код' : 'не выбрано на этом телефоне'}</div>`;
+        }).join('');
+      }
+      document.getElementById('exportModalOverlay').classList.add('open');
+    }
+
+    function closeExportModal() {
+      document.getElementById('exportModalOverlay').classList.remove('open');
+    }
+
+    async function downloadEmbeddedHtml() {
+      const p1 = localStorage.getItem(STORAGE_PREFIX + 'photo1') || CONFIG.photos.photo1;
+      const p2 = localStorage.getItem(STORAGE_PREFIX + 'photo2') || CONFIG.photos.photo2;
+      const p3 = localStorage.getItem(STORAGE_PREFIX + 'photo3') || CONFIG.photos.photo3;
+
+      let rawHtml = '';
+      try {
+        const res = await fetch(window.location.href.split('?')[0], { cache: 'no-store' });
+        if (res.ok) {
+          rawHtml = await res.text();
+        }
+      } catch (e) {
+        rawHtml = '';
+      }
+
+      if (!rawHtml) {
+        rawHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+        rawHtml = rawHtml.replace(/class="intro-envelope-overlay[^"]*"/, 'class="intro-envelope-overlay"');
+        rawHtml = rawHtml.replace(/class="export-modal-overlay[^"]*"/, 'class="export-modal-overlay"');
+      }
+
+      const newPhotosBlock = `photos: {\n        photo1: ${JSON.stringify(p1)},\n        photo2: ${JSON.stringify(p2)},\n        photo3: ${JSON.stringify(p3)}\n      }`;
+      const updatedHtml = rawHtml.replace(/photos:\s*\{[\s\S]*?\}/, newPhotosBlock);
+
+      const blob = new Blob([updatedHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'index.html';
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      closeExportModal();
+      showToast('Готовый index.html скачан! Загрузи его в GitHub');
+    }
+
+    // Активация меню экспорта по удержанию кнопки «ДИАС» 1.5 сек или через ?edit=1
+    (function setupAdminExportTrigger() {
+      const brandBtn = document.getElementById('navBrandTrigger');
+      let holdTimer = null;
+
+      if (brandBtn) {
+        const startHold = () => {
+          holdTimer = setTimeout(() => {
+            openExportModal();
+          }, 1500);
+        };
+        const cancelHold = () => {
+          if (holdTimer) clearTimeout(holdTimer);
+        };
+        brandBtn.addEventListener('touchstart', startHold, { passive: true });
+        brandBtn.addEventListener('touchend', cancelHold);
+        brandBtn.addEventListener('touchmove', cancelHold);
+        brandBtn.addEventListener('mousedown', startHold);
+        brandBtn.addEventListener('mouseup', cancelHold);
+        brandBtn.addEventListener('mouseleave', cancelHold);
+      }
+
+      if (window.location.search.includes('edit=1')) {
+        window.addEventListener('DOMContentLoaded', () => {
+          setTimeout(openExportModal, 1400);
+        });
+      }
+    })();
 
     /* ========================================================================
        4. ЭПИЧНОЕ ЗАДУВАНИЕ СВЕЧЕЙ: БУМАЖНОЕ КОНФЕТТИ + ФАНФАРЫ + БАННЕР
@@ -3244,7 +3406,6 @@
       ensureAudioEngine();
       const now = audioCtx.currentTime;
 
-      // Звук мягкого порыва ветра при задувании
       const blowLen = Math.floor(audioCtx.sampleRate * 0.26);
       const blowBuf = audioCtx.createBuffer(1, blowLen, audioCtx.sampleRate);
       const blowData = blowBuf.getChannelData(0);
@@ -3264,7 +3425,6 @@
       blowGain.connect(compressorNode);
       blowSrc.start(now);
 
-      // Торжественный праздничный аккорд-фанфара (C5 -> E5 -> G5 -> C6)
       const fanfareNotes = [
         { freq: 523.25, delay: 0.14, dur: 0.22 },
         { freq: 659.25, delay: 0.26, dur: 0.22 },
