@@ -25,6 +25,7 @@
       --paper-warm: #EDE6D8;
       --paper-white: #FCFBF9;
       --kraft: #D5C3AA;
+      --terracotta: #E07A5F;
       --charcoal: #222831;
       --muted-text: #526071;
       --border-subtle: rgba(27, 54, 93, 0.22);
@@ -176,7 +177,194 @@
     }
 
     /* ==========================================================================
-       4. ТАКТИЛЬНЫЕ ФОНЫ (ЛИНОВАНАЯ БУМАГА, ТКАНЕВАЯ КЛЕТКА, ОБОИ В ПОЛОСКУ)
+       3.1. СТАРТОВЫЙ КОНВЕРТ С ПЕЧАТЬЮ И ХОРЕОГРАФИЯ АНИМАЦИЙ
+       ========================================================================== */
+    .intro-envelope-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 2500;
+      background: var(--paper);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.65s ease;
+      overflow: hidden;
+    }
+
+    .intro-envelope-overlay.opened {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .intro-envelope-card {
+      width: min(540px, 90vw);
+      aspect-ratio: 16 / 10;
+      background: var(--paper-white);
+      border: 2px solid var(--ink);
+      border-radius: 14px;
+      position: relative;
+      box-shadow: 0 24px 54px rgba(19, 38, 66, 0.22);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .intro-envelope-overlay.opened .intro-envelope-card {
+      transform: scale(1.14) translateY(-18px);
+    }
+
+    .intro-flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 58%;
+      background: linear-gradient(180deg, #E8EFF7 0%, #DCE6F2 100%);
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      transform-origin: top center;
+      transition: transform 0.55s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 2;
+    }
+
+    .intro-envelope-overlay.opening .intro-flap {
+      transform: rotateX(175deg);
+    }
+
+    .intro-seal {
+      position: relative;
+      z-index: 3;
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: var(--ink);
+      border: 3px solid var(--paper-white);
+      box-shadow: 0 8px 20px rgba(19, 38, 66, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--paper-white);
+      animation: sealPulse 1.4s ease-in-out infinite;
+      transition: transform 0.4s ease, opacity 0.35s ease;
+    }
+
+    .intro-envelope-overlay.opening .intro-seal {
+      transform: scale(1.25) translateY(-16px);
+      opacity: 0;
+    }
+
+    .intro-caption {
+      margin-top: 20px;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--ink);
+      letter-spacing: 0.03em;
+    }
+
+    @keyframes sealPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    .char-pop {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(18px) scale(0.86);
+      animation: charPopIn 0.48s cubic-bezier(0.22, 1.35, 0.36, 1) forwards;
+    }
+
+    @keyframes charPopIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .balloon-float-slow {
+      animation: floatGentle 3.8s ease-in-out infinite;
+      transform-origin: center bottom;
+    }
+
+    .balloon-float-fast {
+      animation: floatGentle 3.1s ease-in-out infinite reverse;
+      transform-origin: center bottom;
+    }
+
+    @keyframes floatGentle {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1.5deg); }
+    }
+
+    .anim-slide-up {
+      opacity: 0;
+      transform: translateY(28px);
+      animation: slideUpSpring 0.6s cubic-bezier(0.22, 1.25, 0.36, 1) forwards;
+    }
+
+    .anim-slide-left {
+      opacity: 0;
+      transform: translateX(-36px);
+      animation: slideSideSpring 0.62s cubic-bezier(0.22, 1.2, 0.36, 1) forwards;
+    }
+
+    .anim-slide-right {
+      opacity: 0;
+      transform: translateX(36px);
+      animation: slideSideSpring 0.62s cubic-bezier(0.22, 1.2, 0.36, 1) forwards;
+    }
+
+    .anim-drop-down {
+      opacity: 0;
+      transform: translateY(-24px);
+      animation: slideUpSpring 0.55s cubic-bezier(0.22, 1.25, 0.36, 1) forwards;
+    }
+
+    @keyframes slideUpSpring {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideSideSpring {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Пульсация и покачивание денежного букета */
+    .bouquet-sway {
+      animation: bouquetPulseAndSway 2.3s ease-in-out infinite;
+      transform-origin: center center;
+    }
+
+    @keyframes bouquetPulseAndSway {
+      0%, 100% { transform: scale(1) rotate(-1.2deg); }
+      50% { transform: scale(1.045) rotate(1.4deg); }
+    }
+
+    .bouquet-tap-burst {
+      animation: bouquetTapPop 0.28s cubic-bezier(0.22, 1.5, 0.36, 1) !important;
+    }
+
+    @keyframes bouquetTapPop {
+      0% { transform: scale(0.93) rotate(-2deg); }
+      60% { transform: scale(1.09) rotate(2deg); }
+      100% { transform: scale(1.02) rotate(0deg); }
+    }
+
+    /* ==========================================================================
+       4. ТАКТИЛЬНЫЕ ФОНЫ
        ========================================================================== */
     .bg-cover {
       background-color: var(--paper-white);
@@ -209,7 +397,8 @@
         #DCE5F0 48px,
         #DCE5F0 96px
       );
-      padding-top: 66px;
+      padding-top: 84px;
+      overflow: hidden;
     }
 
     .top-valance {
@@ -217,13 +406,33 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 40px;
+      height: 36px;
       overflow: hidden;
+      z-index: 6;
+      pointer-events: none;
+    }
+
+    /* Праздничная гирлянда с флажками под волнистым бордюром */
+    .party-garland {
+      position: absolute;
+      top: 22px;
+      left: 0;
+      width: 100%;
+      height: 62px;
       z-index: 5;
       pointer-events: none;
     }
 
-    /* Кусочки полупрозрачного бумажного скотча (Washi Tape) */
+    .garland-sway {
+      transform-origin: top center;
+      animation: garlandGentleSway 4.2s ease-in-out infinite;
+    }
+
+    @keyframes garlandGentleSway {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      50% { transform: rotate(0.4deg) translateY(2px); }
+    }
+
     .washi-tape {
       position: absolute;
       width: 84px;
@@ -600,7 +809,7 @@
     }
 
     /* ==========================================================================
-       9. ЭКРАН 4: ДЕНЕЖНЫЙ БУКЕТ
+       9. ЭКРАН 4: ДЕНЕЖНЫЙ БУКЕТ + ИНТЕРАКТИВНАЯ ПОДСКАЗКА
        ========================================================================== */
     .bouquet-layout {
       max-width: 1020px;
@@ -614,14 +823,44 @@
 
     .bouquet-art {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
+      cursor: pointer;
+      user-select: none;
     }
 
     .bouquet-art svg {
       width: 100%;
       max-width: 390px;
       filter: drop-shadow(0 16px 26px rgba(19, 38, 66, 0.15));
+      transition: filter 0.2s ease;
+    }
+
+    .bouquet-art:hover svg {
+      filter: drop-shadow(0 20px 32px rgba(27, 54, 93, 0.25));
+    }
+
+    .bouquet-hint-badge {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--paper-white);
+      border: 1.5px solid var(--ink);
+      border-radius: 999px;
+      padding: 7px 18px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 0.86rem;
+      color: var(--ink);
+      box-shadow: 0 6px 16px rgba(19, 38, 66, 0.12);
+      animation: hintBounce 2s ease-in-out infinite;
+    }
+
+    @keyframes hintBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
     }
 
     .bouquet-card {
@@ -655,34 +894,378 @@
     }
 
     /* ==========================================================================
-       10. ЭКРАН 5: ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ВИНИЛОВЫЙ ПРОИГРЫВАТЕЛЬ
+       9.1. МОДАЛЬНОЕ ОКНО СЕКРЕТНОГО ТЕСТА НА ТУРЕЦКОМ ЯЗЫКЕ + КУПЮРА 25 000 ТГ
        ========================================================================== */
+    .secret-quiz-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 4000;
+      background: rgba(19, 38, 66, 0.72);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      animation: fadeInOverlay 0.28s ease forwards;
+    }
+
+    .secret-quiz-overlay.open {
+      display: flex;
+    }
+
+    @keyframes fadeInOverlay {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .secret-quiz-modal {
+      width: 100%;
+      max-width: 560px;
+      background: var(--paper-white);
+      border: 2px solid var(--ink);
+      border-radius: 22px;
+      padding: 28px 26px 26px;
+      box-shadow: 0 26px 60px rgba(10, 22, 42, 0.42);
+      position: relative;
+      animation: modalPopIn 0.35s cubic-bezier(0.22, 1.3, 0.36, 1) forwards;
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    @keyframes modalPopIn {
+      from { opacity: 0; transform: scale(0.9) translateY(16px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .quiz-close-x {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-subtle);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+    }
+
+    .quiz-close-x:hover {
+      background: var(--ink);
+      color: var(--paper-white);
+    }
+
+    .quiz-turkish-badge {
+      display: inline-block;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      background: #E30A17;
+      color: #FFFFFF;
+      padding: 5px 12px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .quiz-turkish-question {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.12rem, 2.3vw, 1.38rem);
+      color: var(--ink);
+      line-height: 1.35;
+      margin-bottom: 20px;
+    }
+
+    .quiz-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .quiz-option-btn {
+      width: 100%;
+      text-align: left;
+      background: var(--paper);
+      border: 1.5px solid rgba(27, 54, 93, 0.28);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--ink);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.18s ease;
+    }
+
+    .quiz-option-btn:hover {
+      background: var(--ink);
+      color: var(--paper-white);
+      border-color: var(--ink);
+      transform: translateX(4px);
+    }
+
+    .quiz-opt-letter {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: var(--paper-white);
+      color: var(--ink);
+      border: 1.5px solid rgba(27, 54, 93, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+
+    .reward-banknote-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .banknote-svg-frame {
+      width: 100%;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 16px 34px rgba(19, 38, 66, 0.26);
+      border: 2px solid #1B365D;
+      margin: 10px 0 18px;
+      animation: banknoteReveal 0.55s cubic-bezier(0.22, 1.35, 0.36, 1) forwards;
+    }
+
+    @keyframes banknoteReveal {
+      from { opacity: 0; transform: scale(0.84) rotate(-2deg); }
+      to { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+
+    .send-mom-callout {
+      width: 100%;
+      background: #FEF3C7;
+      border: 2px dashed #B45309;
+      border-radius: 14px;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .send-mom-title {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+      color: #92400E;
+      letter-spacing: 0.01em;
+    }
+
+    .send-mom-sub {
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #78350F;
+      margin-top: 4px;
+    }
+
+    /* ==========================================================================
+       9.2. ПОЛНОЭКРАННОЕ УВЕДОМЛЕНИЕ О ДЕПОРТАЦИИ В КАЗАХСТАН
+       ========================================================================== */
+    .deportation-fullscreen {
+      position: fixed;
+      inset: 0;
+      z-index: 4800;
+      background: repeating-linear-gradient(
+        -45deg,
+        #7F1D1D,
+        #7F1D1D 24px,
+        #991B1B 24px,
+        #991B1B 48px
+      );
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: deportShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    .deportation-fullscreen.open {
+      display: flex;
+    }
+
+    @keyframes deportShake {
+      0%, 100% { transform: translateX(0); }
+      15%, 45%, 75% { transform: translateX(-8px); }
+      30%, 60%, 90% { transform: translateX(8px); }
+    }
+
+    .deportation-card {
+      width: 100%;
+      max-width: 620px;
+      background: #FCFBF9;
+      border: 4px solid #1E293B;
+      border-radius: 22px;
+      padding: 34px 28px;
+      text-align: center;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.55);
+      position: relative;
+    }
+
+    .deport-stamp {
+      display: inline-block;
+      border: 3px solid #DC2626;
+      color: #DC2626;
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: 0.82rem;
+      letter-spacing: 0.12em;
+      padding: 6px 16px;
+      border-radius: 8px;
+      transform: rotate(-3deg);
+      margin-bottom: 18px;
+      text-transform: uppercase;
+    }
+
+    .deport-headline {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: clamp(1.45rem, 3.4vw, 2.2rem);
+      line-height: 1.2;
+      color: #B91C1C;
+      margin-bottom: 14px;
+    }
+
+    .deport-desc {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 1.04rem;
+      line-height: 1.5;
+      color: #334155;
+      margin-bottom: 24px;
+    }
+
+    .deport-return-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #1E293B;
+      color: #FFFFFF;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 14px 28px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.3);
+      transition: transform 0.18s ease, background-color 0.2s ease;
+    }
+
+    .deport-return-btn:hover {
+      background: #0F172A;
+      transform: translateY(-2px);
+    }
+
+    /* ==========================================================================
+       10. ЭКРАН 5: ЭПИЧНЫЙ ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ПРОИГРЫВАТЕЛЬ
+       ========================================================================== */
+    .cake-confetti-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 1800;
+      overflow: hidden;
+    }
+
+    .paper-confetti-piece {
+      position: absolute;
+      width: 11px;
+      height: 18px;
+      border-radius: 2px;
+      opacity: 0;
+      animation: paperConfettiBurst var(--dur, 2.4s) cubic-bezier(0.16, 0.88, 0.32, 1) forwards;
+    }
+
+    @keyframes paperConfettiBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(0.7);
+      }
+      20% {
+        opacity: 1;
+        transform: translate(var(--tx1, 40px), var(--ty1, -160px)) rotate(140deg) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx2, 90px), var(--ty2, 340px)) rotate(540deg) scale(0.85);
+      }
+    }
+
     .cake-screen-wrapper {
-      max-width: 1100px;
+      max-width: 1140px;
       width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 30px;
+      gap: 28px;
       z-index: 5;
+    }
+
+    /* Торжественный баннер-шапка над сценой торта */
+    .cake-stage-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--paper-white);
+      border: 2px solid var(--ink);
+      border-radius: 999px;
+      padding: 8px 24px;
+      box-shadow: 0 8px 22px rgba(19, 38, 66, 0.12);
+    }
+
+    .cake-stage-banner-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--terracotta);
+    }
+
+    .cake-stage-banner-text {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.76rem, 1.4vw, 0.92rem);
+      color: var(--ink);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     .cake-top-stage {
       width: 100%;
       display: grid;
-      grid-template-columns: 1fr 1.12fr;
+      grid-template-columns: 0.94fr 1.16fr;
       align-items: center;
-      gap: 30px;
+      gap: 28px;
     }
 
-    /* Галерея из 3 рамок (2 Polaroid со скотчем + 1 винтажная рамка-зеркало) */
     .photo-gallery-zone {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 20px;
       position: relative;
-      padding: 14px;
+      padding: 16px;
+      background: rgba(252, 251, 249, 0.65);
+      border: 1.5px solid rgba(27, 54, 93, 0.16);
+      border-radius: 24px;
+      box-shadow: var(--shadow-card);
     }
 
     .polaroid-stack {
@@ -707,7 +1290,7 @@
     }
 
     .polaroid-frame {
-      width: 172px;
+      width: 170px;
       padding: 10px 10px 28px 10px;
       border-radius: 4px;
     }
@@ -725,12 +1308,12 @@
     }
 
     .polaroid-2 {
-      transform: rotate(2.5deg) translateX(12px);
+      transform: rotate(2.5deg) translateX(10px);
     }
 
     .polaroid-img-box {
       width: 100%;
-      height: 132px;
+      height: 130px;
       background: var(--sky-muted);
       overflow: hidden;
       display: flex;
@@ -752,7 +1335,6 @@
       pointer-events: none;
     }
 
-    /* Винтажная овальная рамка-ЗЕРКАЛО для детского фото */
     .mirror-wrapper {
       position: relative;
       display: flex;
@@ -774,8 +1356,8 @@
     }
 
     .oval-frame {
-      width: 172px;
-      height: 234px;
+      width: 170px;
+      height: 232px;
       border-radius: 50%;
       padding: 11px;
       background: linear-gradient(155deg, #E2E8F0 0%, #8DA9C4 45%, #3B5B8C 100%);
@@ -802,7 +1384,6 @@
       box-shadow: inset 0 0 14px rgba(19, 38, 66, 0.24);
     }
 
-    /* Деликатный стеклянный блик зеркала */
     .oval-img-box::after {
       content: '';
       position: absolute;
@@ -873,51 +1454,102 @@
       opacity: 1;
     }
 
-    /* Блок с тортом */
+    /* Центральная сцена эпичного трёхъярусного торта */
     .cake-center-zone {
       display: flex;
       flex-direction: column;
       align-items: center;
+      background: rgba(252, 251, 249, 0.82);
+      border: 1.5px solid rgba(27, 54, 93, 0.2);
+      border-radius: 26px;
+      padding: 20px 22px 22px;
+      box-shadow: var(--shadow-soft);
       position: relative;
+      transition: background-color 0.45s ease, border-color 0.45s ease;
     }
 
-    .cake-hint {
-      background: var(--paper-white);
-      border: 1.5px solid var(--border-subtle);
-      border-radius: 8px;
-      padding: 7px 16px;
-      font-weight: 600;
-      font-size: 0.86rem;
-      color: var(--ink);
-      margin-bottom: 10px;
-      box-shadow: 0 4px 12px rgba(19, 38, 66, 0.08);
+    .cake-center-zone.wish-granted {
+      background: rgba(252, 251, 249, 0.96);
+      border-color: var(--ink);
+    }
+
+    .cake-wish-banner {
+      display: none;
+      background: var(--ink);
+      color: var(--paper-white);
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: clamp(0.76rem, 1.35vw, 0.9rem);
+      padding: 8px 18px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+      text-align: center;
+      letter-spacing: 0.03em;
+      animation: wishBannerPop 0.45s cubic-bezier(0.22, 1.4, 0.36, 1) forwards;
+    }
+
+    .cake-center-zone.wish-granted .cake-wish-banner {
+      display: inline-block;
+    }
+
+    @keyframes wishBannerPop {
+      from { opacity: 0; transform: scale(0.84) translateY(-8px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .cake-svg-wrapper {
       width: 100%;
-      max-width: 430px;
+      max-width: 490px;
       cursor: pointer;
-      filter: drop-shadow(0 14px 22px rgba(19, 38, 66, 0.16));
-      transition: transform 0.2s ease;
+      filter: drop-shadow(0 16px 26px rgba(19, 38, 66, 0.16));
+      transition: transform 0.22s ease;
     }
 
     .cake-svg-wrapper:hover {
       transform: scale(1.015);
     }
 
-    .candle-flame {
+    .cake-topper-flag {
       transform-origin: center bottom;
-      animation: flickerFlame 0.7s infinite alternate ease-in-out;
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      animation: topperWave 3.2s ease-in-out infinite;
     }
 
-    .candle-flame.delay-1 { animation-delay: 0.18s; }
-    .candle-flame.delay-2 { animation-delay: 0.35s; }
+    @keyframes topperWave {
+      0%, 100% { transform: rotate(-1.2deg); }
+      50% { transform: rotate(1.4deg); }
+    }
+
+    /* Тёплое свечение вокруг свечей (уходит, когда свечи задуты) */
+    .candle-halo {
+      transition: opacity 0.4s ease;
+      animation: haloPulse 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes haloPulse {
+      from { opacity: 0.24; transform: scale(0.96); }
+      to { opacity: 0.42; transform: scale(1.04); }
+    }
+
+    .candles-out .candle-halo {
+      opacity: 0 !important;
+      animation: none;
+    }
+
+    .candle-flame {
+      transform-origin: center bottom;
+      animation: flickerFlame 0.65s infinite alternate ease-in-out;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+
+    .candle-flame.delay-1 { animation-delay: 0.14s; }
+    .candle-flame.delay-2 { animation-delay: 0.28s; }
+    .candle-flame.delay-3 { animation-delay: 0.42s; }
+    .candle-flame.delay-4 { animation-delay: 0.52s; }
 
     @keyframes flickerFlame {
-      0% { transform: scale(1) rotate(-1.5deg); }
-      50% { transform: scale(1.06, 0.95) rotate(1.5deg); }
-      100% { transform: scale(0.96, 1.04) rotate(-1deg); }
+      0% { transform: scale(1) rotate(-2deg); }
+      50% { transform: scale(1.08, 0.94) rotate(2deg); }
+      100% { transform: scale(0.95, 1.06) rotate(-1.2deg); }
     }
 
     .candles-out .candle-flame {
@@ -925,24 +1557,65 @@
       transform: scale(0);
     }
 
-    .smoke-puff {
+    .smoke-trail {
       opacity: 0;
       pointer-events: none;
     }
 
-    .candles-out .smoke-puff {
-      animation: smokeRise 1.6s ease-out forwards;
+    .candles-out .smoke-trail {
+      animation: smokeTrailRise 2.1s ease-out forwards;
     }
 
-    @keyframes smokeRise {
-      0% { opacity: 0.75; transform: translateY(0) scale(0.7); }
-      100% { opacity: 0; transform: translateY(-32px) scale(1.5); }
+    @keyframes smokeTrailRise {
+      0% { opacity: 0.85; transform: translateY(0) scale(0.75); }
+      45% { opacity: 0.55; transform: translateY(-22px) translateX(4px) scale(1.15); }
+      100% { opacity: 0; transform: translateY(-48px) translateX(-5px) scale(1.55); }
     }
 
-    /* Интерактивная коробка с виниловой пластинкой и звукоснимателем */
+    .cake-action-row {
+      margin-top: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn-blow-candles {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      background: var(--ink);
+      color: var(--paper-white);
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      padding: 11px 22px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 0.94rem;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(27, 54, 93, 0.22);
+      transition: all 0.2s ease;
+    }
+
+    .btn-blow-candles:hover {
+      background: var(--ink-deep);
+      transform: translateY(-2px);
+    }
+
+    .btn-blow-candles.relight-mode {
+      background: var(--paper-white);
+      color: var(--ink);
+    }
+
+    .btn-blow-candles.relight-mode:hover {
+      background: var(--sky-muted);
+    }
+
+    /* Виниловый проигрыватель */
     .vinyl-box-container {
       width: 100%;
-      max-width: 800px;
+      max-width: 840px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       background: var(--paper-white);
@@ -1014,7 +1687,6 @@
       min-height: 232px;
     }
 
-    /* Подвижный звукосниматель (игла) проигрывателя */
     .turntable-tonearm {
       position: absolute;
       top: 16px;
@@ -1124,14 +1796,95 @@
       }
     }
 
+    .vinyl-status-row {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
     .vinyl-status {
-      margin-top: 12px;
       font-weight: 600;
       font-size: 0.84rem;
       color: var(--ink);
+      text-align: center;
     }
 
-    /* Всплывающее уведомление */
+    /* Эквалайзер из 4 столбцов рядом со статусом музыки */
+    .eq-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2.5px;
+      height: 14px;
+    }
+
+    .eq-bar {
+      width: 3px;
+      height: 4px;
+      background: var(--slate-light);
+      border-radius: 2px;
+      transition: height 0.2s ease, background-color 0.2s ease;
+    }
+
+    .eq-bars.playing .eq-bar {
+      background: var(--ink);
+      animation: eqBounce 0.55s ease-in-out infinite alternate;
+    }
+
+    .eq-bars.playing .eq-bar:nth-child(2) { animation-delay: 0.14s; }
+    .eq-bars.playing .eq-bar:nth-child(3) { animation-delay: 0.28s; }
+    .eq-bars.playing .eq-bar:nth-child(4) { animation-delay: 0.08s; }
+
+    @keyframes eqBounce {
+      0% { height: 4px; }
+      100% { height: 14px; }
+    }
+
+    .audio-controls-bar {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .track-switch-btn {
+      background: var(--paper-white);
+      border: 1.5px solid rgba(27, 54, 93, 0.3);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-family: 'Golos Text', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .track-switch-btn:hover {
+      background: var(--sky-muted);
+      border-color: var(--ink);
+    }
+
+    .volume-control-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--paper-white);
+      border: 1.5px solid rgba(27, 54, 93, 0.25);
+      border-radius: 8px;
+      padding: 3px 9px;
+    }
+
+    .volume-slider {
+      width: 72px;
+      accent-color: var(--ink);
+      cursor: pointer;
+    }
+
     .toast-banner {
       position: fixed;
       bottom: 24px;
@@ -1183,6 +1936,10 @@
       .screen {
         min-height: calc(100vh - 56px);
         padding: 24px 16px 38px;
+      }
+
+      .bg-stripes {
+        padding-top: 72px;
       }
 
       .cover-grid {
@@ -1249,19 +2006,24 @@
 
       .photo-gallery-zone {
         flex-wrap: wrap;
+        padding: 14px 10px;
       }
 
       .polaroid-frame {
-        width: 148px;
+        width: 146px;
       }
 
       .polaroid-img-box {
-        height: 112px;
+        height: 110px;
       }
 
       .oval-frame {
-        width: 150px;
-        height: 202px;
+        width: 148px;
+        height: 200px;
+      }
+
+      .cake-center-zone {
+        padding: 16px 12px 18px;
       }
 
       .vinyl-box-container {
@@ -1273,6 +2035,14 @@
         border-bottom: 1.5px solid rgba(27, 54, 93, 0.25);
         min-height: 185px;
       }
+
+      .secret-quiz-modal {
+        padding: 22px 18px;
+      }
+
+      .deportation-card {
+        padding: 26px 18px;
+      }
     }
   </style>
 </head>
@@ -1280,6 +2050,18 @@
 
   <!-- Слой матовой текстуры бумаги -->
   <div class="paper-grain" aria-hidden="true"></div>
+
+  <!-- Слой для залпа бумажного конфетти при задувании свечей -->
+  <div id="cakeConfettiLayer" class="cake-confetti-layer" aria-hidden="true"></div>
+
+  <!-- Стартовый запечатанный конверт с анимацией открытия -->
+  <div id="introOverlay" class="intro-envelope-overlay" onclick="openIntroEnvelope()" role="button" tabindex="0" aria-label="Открыть поздравительный конверт">
+    <div class="intro-envelope-card">
+      <div class="intro-flap"></div>
+      <div class="intro-seal">Д</div>
+    </div>
+    <div class="intro-caption">Для Диаса • Нажми, чтобы распечатать</div>
+  </div>
 
   <!-- ========================================================================
        ВЕРХНЯЯ ПАНЕЛЬ НАВИГАЦИИ
@@ -1305,6 +2087,132 @@
   <!-- Всплывающее уведомление -->
   <div id="toastBanner" class="toast-banner" role="status" aria-live="polite"></div>
 
+  <!-- ========================================================================
+       МОДАЛЬНОЕ ОКНО: СЕКРЕТНЫЙ ТЕСТ НА ТУРЕЦКОМ + КУПЮРА 25 000 ТЕНГЕ
+       ======================================================================== -->
+  <div id="turkishQuizOverlay" class="secret-quiz-overlay" role="dialog" aria-modal="true" aria-labelledby="turkishQuizTitle">
+    <div class="secret-quiz-modal">
+      <button type="button" class="quiz-close-x" onclick="closeTurkishQuiz()" aria-label="Kapat">×</button>
+
+      <!-- Шаг 1: Вопрос на турецком языке -->
+      <div id="quizQuestionStep">
+        <span class="quiz-turkish-badge">GİZLİ SORU • TÜRKİYE TESTİ</span>
+        <h3 class="quiz-turkish-question" id="turkishQuizTitle">
+          Bugün itibarıyla Türkiye Cumhuriyeti'nin mevcut Cumhurbaşkanı kimdir?
+        </h3>
+
+        <div class="quiz-options-list">
+          <button type="button" class="quiz-option-btn" onclick="answerTurkishQuiz(false)">
+            <span class="quiz-opt-letter">A</span>
+            <span>İosif Vissarionoviç Stalin</span>
+          </button>
+
+          <button type="button" class="quiz-option-btn" onclick="answerTurkishQuiz(true)">
+            <span class="quiz-opt-letter">B</span>
+            <span>Recep Tayyip Erdoğan</span>
+          </button>
+
+          <button type="button" class="quiz-option-btn" onclick="answerTurkishQuiz(false)">
+            <span class="quiz-opt-letter">C</span>
+            <span>John Smith (Texas'tan sıradan bir kovboy)</span>
+          </button>
+
+          <button type="button" class="quiz-option-btn" onclick="answerTurkishQuiz(false)">
+            <span class="quiz-opt-letter">D</span>
+            <span>Kaptan Jack Sparrow</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Шаг 2 (при правильном ответе): Купюра 25 000 тг + "Сфоткай и скинь маме" -->
+      <div id="quizRewardStep" class="reward-banknote-box" style="display: none;">
+        <span class="quiz-turkish-badge" style="background: #15803D;">TEBRİKLER! DOĞRU CEVAP!</span>
+
+        <!-- Дизайнерская юбилейная купюра 25 000 ТЕҢГЕ -->
+        <div class="banknote-svg-frame">
+          <svg viewBox="0 0 640 310" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Купюра 25 000 тенге для Диаса">
+            <defs>
+              <linearGradient id="tengeBg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#E6F4EA"/>
+                <stop offset="45%" stop-color="#D1FAE5"/>
+                <stop offset="100%" stop-color="#DBEAFE"/>
+              </linearGradient>
+              <linearGradient id="foilStrip" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FDE68A"/>
+                <stop offset="35%" stop-color="#93C5FD"/>
+                <stop offset="70%" stop-color="#6EE7B7"/>
+                <stop offset="100%" stop-color="#FCD34D"/>
+              </linearGradient>
+              <pattern id="kazakhOrnament" width="32" height="32" patternUnits="userSpaceOnUse">
+                <path d="M16 4 C22 4 28 10 28 16 C28 22 22 28 16 28 C10 28 4 22 4 16 C4 10 10 4 16 4 Z" fill="none" stroke="#065F46" stroke-width="1.2" opacity="0.14"/>
+                <circle cx="16" cy="16" r="3" fill="#047857" opacity="0.14"/>
+              </pattern>
+            </defs>
+
+            <rect width="640" height="310" fill="url(#tengeBg)"/>
+            <rect width="640" height="310" fill="url(#kazakhOrnament)"/>
+
+            <rect x="12" y="12" width="616" height="286" rx="10" fill="none" stroke="#065F46" stroke-width="3"/>
+            <rect x="19" y="19" width="602" height="272" rx="6" fill="none" stroke="#B45309" stroke-width="1.5" stroke-dasharray="6 3"/>
+
+            <rect x="478" y="14" width="26" height="282" fill="url(#foilStrip)" opacity="0.88"/>
+            <path d="M478 40 L504 55 M478 90 L504 105 M478 140 L504 155 M478 190 L504 205 M478 240 L504 255" stroke="#FFFFFF" stroke-width="2" opacity="0.7"/>
+
+            <g transform="translate(115, 158)">
+              <circle cx="0" cy="0" r="68" fill="#FFFFFF" fill-opacity="0.72" stroke="#047857" stroke-width="2"/>
+              <circle cx="0" cy="-12" r="24" fill="#F59E0B" opacity="0.85"/>
+              <path d="M-14 48 L-6 -4 L6 -4 L14 48 Z" fill="none" stroke="#065F46" stroke-width="2.5"/>
+              <path d="M-10 22 L10 22 M-8 8 L8 8" stroke="#065F46" stroke-width="2"/>
+              <circle cx="0" cy="-12" r="14" fill="#FBBF24" stroke="#92400E" stroke-width="2"/>
+            </g>
+
+            <text x="34" y="46" fill="#064E3B" font-family="Unbounded, sans-serif" font-weight="800" font-size="13" letter-spacing="0.8">ҚАЗАҚСТАН ҰЛТТЫҚ БАНКІ</text>
+            <text x="34" y="64" fill="#B45309" font-family="Golos Text, sans-serif" font-weight="700" font-size="11" letter-spacing="1.2">АРНАЙЫ МЕРЕКЕЛІК ШЫҒАРЫЛЫМ • ДИАС</text>
+
+            <text x="606" y="56" text-anchor="end" fill="#064E3B" font-family="Unbounded, sans-serif" font-weight="800" font-size="28">25 000</text>
+            <text x="606" y="76" text-anchor="end" fill="#047857" font-family="Unbounded, sans-serif" font-weight="700" font-size="12">ТЕҢГЕ</text>
+
+            <text x="335" y="156" text-anchor="middle" fill="#064E3B" font-family="Unbounded, sans-serif" font-weight="800" font-size="48" letter-spacing="-1">25 000 ₸</text>
+            <text x="335" y="184" text-anchor="middle" fill="#047857" font-family="Unbounded, sans-serif" font-weight="700" font-size="14" letter-spacing="1.5">ЖИЫРМА БЕС МЫҢ ТЕҢГЕ</text>
+
+            <g transform="translate(335, 224) rotate(-3)">
+              <rect x="-118" y="-16" width="236" height="32" rx="6" fill="#FEF3C7" stroke="#B45309" stroke-width="2"/>
+              <text x="0" y="5" text-anchor="middle" fill="#92400E" font-family="Unbounded, sans-serif" font-weight="700" font-size="11">ТУҒАН КҮН БОНУСЫ • 100%</text>
+            </g>
+
+            <text x="34" y="276" fill="#991B1B" font-family="Unbounded, sans-serif" font-weight="700" font-size="13" letter-spacing="1.5">KZ 2026 ДИАС 25000</text>
+            <text x="606" y="278" text-anchor="end" fill="#064E3B" font-family="Unbounded, sans-serif" font-weight="800" font-size="24">25 000 ₸</text>
+          </svg>
+        </div>
+
+        <div class="send-mom-callout">
+          <div class="send-mom-title">Сфоткай и скинь маме 📸</div>
+          <div class="send-mom-sub">Ты честно выиграл 25 000 ₸ за знание президента Турции!</div>
+        </div>
+
+        <button type="button" class="btn-primary" onclick="closeTurkishQuiz()" style="width: 100%;">
+          Вернуться к букету
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       ПОЛНОЭКРАННОЕ УВЕДОМЛЕНИЕ ПРИ НЕПРАВИЛЬНОМ ОТВЕТЕ (ДЕПОРТАЦИЯ)
+       ======================================================================== -->
+  <div id="deportationOverlay" class="deportation-fullscreen" role="alertdialog" aria-modal="true" aria-labelledby="deportTitle">
+    <div class="deportation-card">
+      <div class="deport-stamp">MIGRATION CONTROL • İPTAL</div>
+      <h2 class="deport-headline" id="deportTitle">ВАС ДЕПОРТИРУЮТ ОБРАТНО В КАЗАХСТАН!</h2>
+      <p class="deport-desc">
+        Неверный ответ в экзамене на знание президента Турции! Ваш чемодан уже собирают, билет в один конец оформлен.
+      </p>
+      <button type="button" class="deport-return-btn" onclick="closeDeportationOverlay()">
+        Закрыть и вернуться к букету
+      </button>
+    </div>
+  </div>
+
   <main class="app-container">
 
     <!-- ======================================================================
@@ -1319,7 +2227,6 @@
 
           <!-- Иллюстрация кота в праздничном колпаке в стиле вырезного бумажного стикера -->
           <svg class="cat-sticker" viewBox="0 0 360 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Кот в праздничном колпаке">
-            <!-- Следы лап -->
             <g fill="#4A6FA5" opacity="0.45">
               <g transform="translate(46, 86) rotate(-24)">
                 <ellipse cx="16" cy="22" rx="9" ry="7"/>
@@ -1344,23 +2251,19 @@
               </g>
             </g>
 
-            <!-- Белая вырезная подложка стикера -->
             <ellipse cx="180" cy="206" rx="96" ry="82" fill="#FFFFFF"/>
             <ellipse cx="180" cy="206" rx="88" ry="74" fill="#ECE4D5" stroke="#1B365D" stroke-width="2.5"/>
 
-            <!-- Уши -->
             <path d="M104 156 L92 104 L142 132 Z" fill="#D8CEBE" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
             <path d="M108 148 L101 116 L132 134 Z" fill="#8DA9C4"/>
 
             <path d="M256 156 L268 104 L218 132 Z" fill="#D8CEBE" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
             <path d="M252 148 L259 116 L228 134 Z" fill="#8DA9C4"/>
 
-            <!-- Полоски шерсти -->
             <path d="M166 138 L166 154 M180 134 L180 156 M194 138 L194 154" stroke="#7A869A" stroke-width="3.5" stroke-linecap="round"/>
             <path d="M98 196 L120 200 M96 212 L118 212" stroke="#7A869A" stroke-width="3.5" stroke-linecap="round"/>
             <path d="M262 196 L240 200 M264 212 L242 212" stroke="#7A869A" stroke-width="3.5" stroke-linecap="round"/>
 
-            <!-- Полосатый колпак -->
             <g transform="translate(180, 92) rotate(-6)">
               <path d="M-36 38 L0 -62 L36 38 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
               <path d="M-22 4 L13 -22 M-30 24 L24 -5" stroke="#DCE6F2" stroke-width="6" stroke-linecap="round"/>
@@ -1369,39 +2272,42 @@
               <rect x="-40" y="32" width="80" height="11" rx="5.5" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
             </g>
 
-            <!-- Довольные глаза, нос и улыбка -->
             <path d="M128 196 Q144 178 160 196" fill="none" stroke="#222831" stroke-width="4.5" stroke-linecap="round"/>
             <path d="M200 196 Q216 178 232 196" fill="none" stroke="#222831" stroke-width="4.5" stroke-linecap="round"/>
             <path d="M173 212 L187 212 L180 221 Z" fill="#1B365D"/>
             <path d="M158 228 Q169 240 180 226 Q191 240 202 228" fill="none" stroke="#222831" stroke-width="3.5" stroke-linecap="round"/>
             <path d="M173 233 Q180 252 187 233 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2"/>
 
-            <!-- Усы -->
             <path d="M134 218 L86 210 M134 226 L88 232" stroke="#222831" stroke-width="2.2" stroke-linecap="round"/>
             <path d="M226 218 L274 210 M226 226 L272 232" stroke="#222831" stroke-width="2.2" stroke-linecap="round"/>
           </svg>
         </div>
 
         <!-- Правая колонка: Карточка с подарочной коробкой и кнопкой -->
-        <div class="cover-right">
+        <div class="cover-right anim-slide-up" style="animation-delay: 0.16s;">
           <div class="edition-stamp">НОВЫЙ УРОВЕНЬ</div>
 
           <svg class="gift-illustration" viewBox="0 0 420 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Подарочная коробка с воздушными шарами">
             <circle cx="210" cy="180" r="138" fill="#DCE6F2" opacity="0.65"/>
 
-            <!-- Нити шаров -->
             <path d="M78 152 Q98 205 130 240" stroke="#1B365D" stroke-width="1.8" stroke-dasharray="4 3"/>
             <path d="M114 108 Q126 172 148 220" stroke="#1B365D" stroke-width="1.8"/>
             <path d="M310 106 Q294 172 275 220" stroke="#1B365D" stroke-width="1.8"/>
             <path d="M346 152 Q326 205 292 240" stroke="#1B365D" stroke-width="1.8" stroke-dasharray="4 3"/>
 
-            <!-- Воздушные шары -->
-            <ellipse cx="76" cy="116" rx="28" ry="35" transform="rotate(-14 76 116)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
-            <ellipse cx="114" cy="72" rx="26" ry="33" transform="rotate(-6 114 72)" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
-            <ellipse cx="308" cy="72" rx="26" ry="33" transform="rotate(8 308 72)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
-            <ellipse cx="346" cy="116" rx="28" ry="35" transform="rotate(15 346 116)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+            <g class="balloon-float-slow">
+              <ellipse cx="76" cy="116" rx="28" ry="35" transform="rotate(-14 76 116)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+            </g>
+            <g class="balloon-float-fast">
+              <ellipse cx="114" cy="72" rx="26" ry="33" transform="rotate(-6 114 72)" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+            </g>
+            <g class="balloon-float-slow">
+              <ellipse cx="308" cy="72" rx="26" ry="33" transform="rotate(8 308 72)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
+            </g>
+            <g class="balloon-float-fast">
+              <ellipse cx="346" cy="116" rx="28" ry="35" transform="rotate(15 346 116)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+            </g>
 
-            <!-- Подарочная коробка -->
             <g transform="translate(0, 12)">
               <rect x="116" y="170" width="188" height="138" rx="10" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
               <rect x="118" y="170" width="184" height="12" fill="#4A6FA5" opacity="0.35"/>
@@ -1410,7 +2316,6 @@
               <rect x="106" y="138" width="208" height="34" rx="8" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
               <rect x="191" y="138" width="38" height="34" fill="#1B365D"/>
 
-              <!-- Бант -->
               <path d="M210 138 C166 86 118 106 150 138 Z" fill="#1B365D" stroke="#132642" stroke-width="2.5" stroke-linejoin="round"/>
               <path d="M210 138 C254 86 302 106 270 138 Z" fill="#1B365D" stroke="#132642" stroke-width="2.5" stroke-linejoin="round"/>
               <path d="M210 138 C182 98 152 114 176 138 Z" fill="#4A6FA5"/>
@@ -1433,13 +2338,12 @@
          ЭКРАН 2: МЕНЮ ВЫБОРА («Твой сюрприз»)
          ====================================================================== -->
     <section id="screen-surprise" class="screen bg-gingham">
-      <div class="surprise-header">
+      <div class="surprise-header anim-drop-down" style="animation-delay: 0.04s;">
         <h2 class="surprise-title">Сюрприз ко дню рождения специально для тебя, Диас!</h2>
       </div>
 
       <div class="cards-row">
-        <!-- Карточка 1: Письмо -->
-        <div class="surprise-card" onclick="navigateTo('letter')" role="button" tabindex="0" aria-label="Открыть письмо">
+        <div class="surprise-card anim-slide-up" style="animation-delay: 0.14s;" onclick="navigateTo('letter')" role="button" tabindex="0" aria-label="Открыть письмо">
           <span class="card-index">01</span>
           <div class="shield-frame">
             <div class="shield-inner">
@@ -1455,8 +2359,7 @@
           <span class="card-label-btn">Письмо</span>
         </div>
 
-        <!-- Карточка 2: Денежный букет -->
-        <div class="surprise-card" onclick="navigateTo('bouquet')" role="button" tabindex="0" aria-label="Открыть букет">
+        <div class="surprise-card anim-slide-up" style="animation-delay: 0.26s;" onclick="navigateTo('bouquet')" role="button" tabindex="0" aria-label="Открыть букет">
           <span class="card-index">02</span>
           <div class="shield-frame">
             <div class="shield-inner">
@@ -1474,8 +2377,7 @@
           <span class="card-label-btn">Букет</span>
         </div>
 
-        <!-- Карточка 3: Торт -->
-        <div class="surprise-card" onclick="navigateTo('cake')" role="button" tabindex="0" aria-label="Открыть торт">
+        <div class="surprise-card anim-slide-up" style="animation-delay: 0.38s;" onclick="navigateTo('cake')" role="button" tabindex="0" aria-label="Открыть торт">
           <span class="card-index">03</span>
           <div class="shield-frame">
             <div class="shield-inner">
@@ -1512,8 +2414,7 @@
          ====================================================================== -->
     <section id="screen-letter" class="screen bg-stationery">
       <div class="letter-layout">
-        <!-- Левая часть: Раскрытый клетчатый конверт -->
-        <div class="envelope-box">
+        <div class="envelope-box anim-slide-left" style="animation-delay: 0.06s;">
           <svg viewBox="0 0 420 380" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Раскрытый конверт">
             <defs>
               <pattern id="envGingham" width="32" height="32" patternUnits="userSpaceOnUse">
@@ -1529,7 +2430,6 @@
             <path d="M384 146 L225 250 L384 354 Z" fill="url(#envGingham)" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
             <path d="M36 354 L210 226 L384 354 Z" fill="url(#envGingham)" stroke="#1B365D" stroke-width="3" stroke-linejoin="round"/>
 
-            <!-- Лента на конверте -->
             <g transform="translate(88, 128) rotate(-18)">
               <path d="M0 0 C-34 -32 -60 -6 -22 14 Z" fill="#1B365D"/>
               <path d="M0 0 C34 -32 60 -6 22 14 Z" fill="#1B365D"/>
@@ -1538,7 +2438,6 @@
               <circle cx="0" cy="4" r="9" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5"/>
             </g>
 
-            <!-- Сургучная печать -->
             <g transform="translate(92, 272)">
               <circle cx="0" cy="0" r="30" fill="#1B365D" stroke="#FCFBF9" stroke-width="3"/>
               <circle cx="0" cy="0" r="22" fill="none" stroke="#D5C3AA" stroke-width="1.5"/>
@@ -1547,8 +2446,7 @@
           </svg>
         </div>
 
-        <!-- Правая часть: Лист бумаги со скотчем по углам -->
-        <article class="letter-paper">
+        <article class="letter-paper anim-slide-up" style="animation-delay: 0.2s;">
           <div class="washi-tape tape-top-left"></div>
           <div class="washi-tape tape-top-right"></div>
 
@@ -1580,16 +2478,13 @@
          ====================================================================== -->
     <section id="screen-bouquet" class="screen bg-stationery">
       <div class="bouquet-layout">
-        <!-- Левая часть: Иллюстрация букета из купюр -->
-        <div class="bouquet-art">
-          <svg viewBox="0 0 420 430" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Букет из денежных купюр">
+        <div class="bouquet-art anim-slide-up" style="animation-delay: 0.08s;" onclick="handleBouquetClick()" role="button" tabindex="0" aria-label="Нажми на букет несколько раз">
+          <svg id="moneyBouquetSvg" class="bouquet-sway" viewBox="0 0 420 430" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Букет из денежных купюр">
             <circle cx="205" cy="195" r="154" fill="#DCE6F2" opacity="0.7"/>
 
-            <!-- Упаковочная бумага -->
             <path d="M74 165 L210 68 L346 165 L254 362 L166 362 Z" fill="#1B365D" stroke="#132642" stroke-width="3" stroke-linejoin="round"/>
             <path d="M92 172 L210 90 L328 172 L248 358 L172 358 Z" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
 
-            <!-- Веер из 7 денежных купюр -->
             <g transform="translate(135, 195) rotate(-38)">
               <rect x="-32" y="-115" width="64" height="130" rx="5" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
               <rect x="-24" y="-106" width="48" height="112" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5" stroke-dasharray="4 2"/>
@@ -1640,12 +2535,10 @@
               <text x="-11" y="-51" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="10">100</text>
             </g>
 
-            <!-- Передние отвороты крафтовой и синей бумаги -->
             <path d="M98 198 L210 264 L172 394 L142 394 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
             <path d="M322 198 L210 264 L248 394 L278 394 Z" fill="#3B5B8C" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
             <path d="M124 224 L210 272 L296 224 L254 402 L166 402 Z" fill="#E3D5C1" stroke="#1B365D" stroke-width="3" stroke-linejoin="round"/>
 
-            <!-- Лента и бант -->
             <rect x="166" y="312" width="88" height="20" rx="6" fill="#1B365D"/>
             <path d="M210 322 C172 294 148 318 182 330 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
             <path d="M210 322 C248 294 272 318 238 330 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
@@ -1653,10 +2546,13 @@
             <path d="M222 330 L246 396 L228 388 L214 332 Z" fill="#1B365D"/>
             <rect x="198" y="313" width="24" height="18" rx="5" fill="#D5C3AA" stroke="#1B365D" stroke-width="2"/>
           </svg>
+
+          <div class="bouquet-hint-badge" id="bouquetHintBadge">
+            <span>👆 Нажми на букет несколько раз</span>
+          </div>
         </div>
 
-        <!-- Правая часть: Карточка с пожеланием -->
-        <div class="bouquet-card">
+        <div class="bouquet-card anim-slide-right" style="animation-delay: 0.22s;">
           <span class="bouquet-tag">Практичный подарок</span>
           <p class="bouquet-text" id="bouquetTextContent">
             Обычные цветы быстро завянут, поэтому держи правильный букет! Пусть твой бюджет всегда растёт, доходы только умножаются, а финансов с запасом хватает на любые идеи, цели и мечты.
@@ -1675,24 +2571,49 @@
     </section>
 
     <!-- ======================================================================
-         ЭКРАН 5: ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ПРОИГРЫВАТЕЛЬ («Торт»)
+         ЭКРАН 5: ЭПИЧНЫЙ ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ПРОИГРЫВАТЕЛЬ
          ====================================================================== -->
     <section id="screen-cake" class="screen bg-stripes">
       <!-- Волнистый бордюр сверху -->
-      <div class="top-valance" aria-hidden="true">
-        <svg width="100%" height="40" preserveAspectRatio="none" viewBox="0 0 1200 40">
-          <path d="M0,0 L1200,0 L1200,22 Q1150,40 1100,22 Q1050,40 1000,22 Q950,40 900,22 Q850,40 800,22 Q750,40 700,22 Q650,40 600,22 Q550,40 500,22 Q450,40 400,22 Q350,40 300,22 Q250,40 200,22 Q150,40 100,22 Q50,40 0,22 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+      <div class="top-valance anim-drop-down" aria-hidden="true">
+        <svg width="100%" height="36" preserveAspectRatio="none" viewBox="0 0 1200 36">
+          <path d="M0,0 L1200,0 L1200,20 Q1150,36 1100,20 Q1050,36 1000,20 Q950,36 900,20 Q850,36 800,20 Q750,36 700,20 Q650,36 600,20 Q550,36 500,20 Q450,36 400,20 Q350,36 300,20 Q250,36 200,20 Q150,36 100,20 Q50,36 0,20 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+        </svg>
+      </div>
+
+      <!-- Праздничная гирлянда из бумажных флажков -->
+      <div class="party-garland garland-sway" aria-hidden="true">
+        <svg width="100%" height="62" preserveAspectRatio="none" viewBox="0 0 1200 62" fill="none">
+          <path d="M-10 8 Q300 44 600 18 Q900 44 1210 8" stroke="#1B365D" stroke-width="2.5"/>
+          <polygon points="60,15 96,19 76,48" fill="#1B365D"/>
+          <polygon points="145,23 183,26 162,55" fill="#D5C3AA" stroke="#1B365D" stroke-width="1.5"/>
+          <polygon points="235,28 273,29 253,58" fill="#4A6FA5"/>
+          <polygon points="325,29 363,28 344,57" fill="#FCFBF9" stroke="#1B365D" stroke-width="1.5"/>
+          <polygon points="415,26 453,23 435,52" fill="#E07A5F"/>
+          <polygon points="505,21 543,19 524,48" fill="#1B365D"/>
+          <polygon points="655,19 693,21 674,48" fill="#D5C3AA" stroke="#1B365D" stroke-width="1.5"/>
+          <polygon points="745,23 783,26 764,53" fill="#4A6FA5"/>
+          <polygon points="835,28 873,29 854,58" fill="#FCFBF9" stroke="#1B365D" stroke-width="1.5"/>
+          <polygon points="925,29 963,28 944,57" fill="#E07A5F"/>
+          <polygon points="1015,26 1053,23 1034,52" fill="#1B365D"/>
+          <polygon points="1105,19 1141,15 1123,45" fill="#4A6FA5"/>
         </svg>
       </div>
 
       <div class="cake-screen-wrapper">
-        <!-- Верхняя сцена: 3 рамки для фото слева + Торт по центру/справа -->
+        <!-- Торжественная лента-заголовок -->
+        <div class="cake-stage-banner anim-drop-down" style="animation-delay: 0.06s;">
+          <span class="cake-stage-banner-dot"></span>
+          <span class="cake-stage-banner-text">Главный праздничный стол • Диас</span>
+          <span class="cake-stage-banner-dot"></span>
+        </div>
+
+        <!-- Верхняя сцена: 3 рамки для фото слева + Эпичный трёхъярусный торт справа -->
         <div class="cake-top-stage">
           <!-- Блок для 3 фотографий -->
           <div class="photo-gallery-zone">
-            <!-- Две рамки Polaroid со скотчем (Фото 1 и Фото 2) -->
             <div class="polaroid-stack">
-              <div class="photo-slot polaroid-frame polaroid-1" onclick="triggerPhotoUpload('photo1')" title="Нажми, чтобы выбрать или заменить фото">
+              <div class="photo-slot polaroid-frame polaroid-1 anim-slide-up" style="animation-delay: 0.1s;" onclick="triggerPhotoUpload('photo1')" title="Нажми, чтобы выбрать или заменить фото">
                 <div class="washi-tape"></div>
                 <div class="polaroid-img-box" id="slot-photo1">
                   <div class="photo-placeholder">
@@ -1708,7 +2629,7 @@
                 <span class="photo-edit-badge">Заменить</span>
               </div>
 
-              <div class="photo-slot polaroid-frame polaroid-2" onclick="triggerPhotoUpload('photo2')" title="Нажми, чтобы выбрать или заменить фото">
+              <div class="photo-slot polaroid-frame polaroid-2 anim-slide-up" style="animation-delay: 0.22s;" onclick="triggerPhotoUpload('photo2')" title="Нажми, чтобы выбрать или заменить фото">
                 <div class="washi-tape"></div>
                 <div class="polaroid-img-box" id="slot-photo2">
                   <div class="photo-placeholder">
@@ -1725,8 +2646,8 @@
               </div>
             </div>
 
-            <!-- Овальная винтажная рамка-ЗЕРКАЛО для детского фото (Фото 3) -->
-            <div class="mirror-wrapper" onclick="triggerPhotoUpload('photo3')" title="Детское фото в рамке-зеркале (нажми, чтобы заменить)">
+            <!-- Овальная винтажная рамка-ЗЕРКАЛО для детского фото -->
+            <div class="mirror-wrapper anim-slide-up" style="animation-delay: 0.34s;" onclick="triggerPhotoUpload('photo3')" title="Детское фото в рамке-зеркале (нажми, чтобы заменить)">
               <svg class="mirror-crest" width="72" height="22" viewBox="0 0 72 22" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M6 20 C15 7, 26 16, 36 4 C46 16, 57 7, 66 20 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2" stroke-linejoin="round"/>
                 <circle cx="36" cy="12" r="3.5" fill="#FCFBF9" stroke="#1B365D" stroke-width="1.8"/>
@@ -1748,63 +2669,151 @@
             </div>
           </div>
 
-          <!-- Двухъярусный праздничный торт с интерактивными свечами -->
-          <div class="cake-center-zone">
-            <div class="cake-hint" id="cakeHintText">Нажми на торт, чтобы задуть свечи</div>
+          <!-- ЭПИЧНЫЙ ТРЁХЪЯРУСНЫЙ ПРАЗДНИЧНЫЙ ТОРТ -->
+          <div class="cake-center-zone anim-slide-up" id="cakeCenterCard" style="animation-delay: 0.18s;">
+            <div class="cake-wish-banner" id="cakeWishBanner">
+              ЖЕЛАНИЕ ЗАГАДАНО! С ДНЁМ РОЖДЕНИЯ, ДИАС!
+            </div>
 
-            <div class="cake-svg-wrapper" id="interactiveCake" onclick="toggleCandles()" role="button" tabindex="0" aria-label="Праздничный торт со свечами">
-              <svg viewBox="0 0 460 355" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <!-- Два шара справа от торта -->
-                <path d="M358 145 Q345 195 338 235" stroke="#1B365D" stroke-width="2"/>
-                <path d="M396 168 Q376 208 352 242" stroke="#1B365D" stroke-width="2"/>
-                <ellipse cx="362" cy="105" rx="28" ry="36" transform="rotate(10 362 105)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
-                <ellipse cx="404" cy="132" rx="26" ry="33" transform="rotate(18 404 132)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+            <div class="cake-svg-wrapper" id="interactiveCake" onclick="toggleCandles()" role="button" tabindex="0" aria-label="Праздничный трёхъярусный торт со свечами">
+              <svg viewBox="0 0 540 430" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <radialGradient id="candleWarmGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.45"/>
+                    <stop offset="65%" stop-color="#FDE68A" stop-opacity="0.16"/>
+                    <stop offset="100%" stop-color="#FDE68A" stop-opacity="0"/>
+                  </radialGradient>
+                </defs>
 
-                <!-- Подставка под торт -->
-                <ellipse cx="215" cy="322" rx="162" ry="18" fill="#FCFBF9" stroke="#1B365D" stroke-width="3"/>
-                <rect x="180" y="324" width="70" height="15" rx="5" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
-
-                <!-- Нижний ярус торта -->
-                <rect x="76" y="216" width="278" height="104" rx="18" fill="#4A6FA5" stroke="#1B365D" stroke-width="3"/>
-                <path d="M78 232 Q106 254 134 232 Q162 254 190 232 Q218 254 246 232 Q274 254 302 232 Q330 254 352 232 L352 224 Q352 216 334 216 L96 216 Q78 216 78 224 Z" fill="#FCFBF9"/>
-                <path d="M88 292 Q130 310 172 292 Q215 310 258 292 Q300 310 342 292" stroke="#D5C3AA" stroke-width="3.5" stroke-dasharray="2 8" stroke-linecap="round"/>
-
-                <!-- Верхний ярус торта -->
-                <rect x="112" y="124" width="206" height="94" rx="16" fill="#8DA9C4" stroke="#1B365D" stroke-width="3"/>
-                <path d="M114 140 Q138 160 162 140 Q186 160 210 140 Q234 160 258 140 Q282 160 316 140 L316 132 Q316 124 298 124 L132 124 Q114 124 114 132 Z" fill="#FCFBF9"/>
-
-                <!-- Табличка с надписью на торте -->
-                <rect x="132" y="162" width="166" height="36" rx="8" fill="#1B365D"/>
-                <text x="215" y="185" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="700" font-size="11.5" letter-spacing="0.4">С ДНЁМ РОЖДЕНИЯ</text>
-
-                <!-- Три полосатые свечи -->
-                <g transform="translate(156, 66)">
-                  <rect x="0" y="16" width="14" height="42" rx="4" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
-                  <path d="M2 26 L12 20 M2 38 L12 32 M2 50 L12 44" stroke="#4A6FA5" stroke-width="3"/>
-                  <path class="candle-flame" d="M7 -4 C14 6 12 15 7 15 C2 15 0 6 7 -4 Z" fill="#E07A5F"/>
-                  <circle class="smoke-puff" cx="7" cy="4" r="5" fill="#94A3B8"/>
+                <!-- Связки воздушных шаров по обе стороны торта -->
+                <path d="M68 188 Q84 245 96 310" stroke="#1B365D" stroke-width="2"/>
+                <path d="M42 224 Q68 270 92 318" stroke="#1B365D" stroke-width="2" stroke-dasharray="4 3"/>
+                <g class="balloon-float-slow">
+                  <ellipse cx="64" cy="146" rx="28" ry="36" transform="rotate(-12 64 146)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
+                </g>
+                <g class="balloon-float-fast">
+                  <ellipse cx="36" cy="186" rx="24" ry="31" transform="rotate(-20 36 186)" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5"/>
                 </g>
 
-                <g transform="translate(208, 56)">
-                  <rect x="0" y="16" width="14" height="52" rx="4" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
-                  <path d="M2 26 L12 20 M2 38 L12 32 M2 50 L12 44 M2 62 L12 56" stroke="#1B365D" stroke-width="3"/>
-                  <path class="candle-flame delay-1" d="M7 -6 C15 5 13 15 7 15 C1 15 -1 5 7 -6 Z" fill="#E07A5F"/>
-                  <circle class="smoke-puff" cx="7" cy="4" r="5" fill="#94A3B8"/>
+                <path d="M472 182 Q456 242 442 310" stroke="#1B365D" stroke-width="2"/>
+                <path d="M502 218 Q476 266 446 318" stroke="#1B365D" stroke-width="2" stroke-dasharray="4 3"/>
+                <g class="balloon-float-fast">
+                  <ellipse cx="474" cy="142" rx="28" ry="36" transform="rotate(12 474 142)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+                </g>
+                <g class="balloon-float-slow">
+                  <ellipse cx="504" cy="182" rx="24" ry="31" transform="rotate(20 504 182)" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
                 </g>
 
-                <g transform="translate(260, 66)">
-                  <rect x="0" y="16" width="14" height="42" rx="4" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
-                  <path d="M2 26 L12 20 M2 38 L12 32 M2 50 L12 44" stroke="#4A6FA5" stroke-width="3"/>
-                  <path class="candle-flame delay-2" d="M7 -4 C14 6 12 15 7 15 C2 15 0 6 7 -4 Z" fill="#E07A5F"/>
-                  <circle class="smoke-puff" cx="7" cy="4" r="5" fill="#94A3B8"/>
+                <!-- Тёплый ореол света от горящих свечей -->
+                <ellipse class="candle-halo" cx="270" cy="112" rx="138" ry="56" fill="url(#candleWarmGlow)"/>
+
+                <!-- Праздничный топпер-растяжка на двух деревянных шпажках -->
+                <g class="cake-topper-flag">
+                  <line x1="176" y1="34" x2="176" y2="128" stroke="#8C6D46" stroke-width="3.5" stroke-linecap="round"/>
+                  <line x1="364" y1="34" x2="364" y2="128" stroke="#8C6D46" stroke-width="3.5" stroke-linecap="round"/>
+                  <path d="M176 42 Q270 60 364 42" stroke="#1B365D" stroke-width="2.5" fill="none"/>
+                  <!-- Флажки топпера с буквами Д И А С -->
+                  <g transform="translate(194, 45) rotate(5)">
+                    <polygon points="0,0 32,0 16,32" fill="#1B365D"/>
+                    <text x="16" y="17" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="800" font-size="11">Д</text>
+                  </g>
+                  <g transform="translate(234, 49) rotate(2)">
+                    <polygon points="0,0 32,0 16,32" fill="#E07A5F" stroke="#1B365D" stroke-width="1.5"/>
+                    <text x="16" y="17" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="800" font-size="11">И</text>
+                  </g>
+                  <g transform="translate(274, 49) rotate(-2)">
+                    <polygon points="0,0 32,0 16,32" fill="#4A6FA5" stroke="#1B365D" stroke-width="1.5"/>
+                    <text x="16" y="17" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="800" font-size="11">А</text>
+                  </g>
+                  <g transform="translate(314, 45) rotate(-5)">
+                    <polygon points="0,0 32,0 16,32" fill="#1B365D"/>
+                    <text x="16" y="17" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="800" font-size="11">С</text>
+                  </g>
+                </g>
+
+                <!-- Блюдо и массивная ножка-подставка -->
+                <ellipse cx="270" cy="390" rx="194" ry="20" fill="#FCFBF9" stroke="#1B365D" stroke-width="3"/>
+                <path d="M236 392 L222 414 L318 414 L304 392 Z" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+                <rect x="202" y="412" width="136" height="10" rx="5" fill="#1B365D"/>
+
+                <!-- 1-Й (НИЖНИЙ) БОЛЬШОЙ ЯРУС -->
+                <rect x="104" y="294" width="332" height="94" rx="18" fill="#1B365D" stroke="#132642" stroke-width="3"/>
+                <!-- Кремовые подтёки на нижнем ярусе -->
+                <path d="M106 310 Q132 332 158 310 Q184 334 210 310 Q236 332 262 310 Q288 334 314 310 Q340 332 366 310 Q392 334 434 310 L434 302 Q434 294 416 294 L124 294 Q106 294 106 302 Z" fill="#FCFBF9"/>
+                <!-- Декоративная гирлянда из кремовых бусин по нижнему ярусу -->
+                <path d="M118 358 Q156 376 194 358 Q232 376 270 358 Q308 376 346 358 Q384 376 422 358" stroke="#D5C3AA" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round"/>
+
+                <!-- 2-Й (СРЕДНИЙ) ЯРУС -->
+                <rect x="142" y="206" width="256" height="88" rx="16" fill="#4A6FA5" stroke="#1B365D" stroke-width="3"/>
+                <path d="M144 222 Q168 242 192 222 Q216 244 240 222 Q264 242 288 222 Q312 244 336 222 Q360 242 396 222 L396 214 Q396 206 378 206 L162 206 Q144 206 144 214 Z" fill="#DCE6F2"/>
+                <!-- Табличка "С ДНЁМ РОЖДЕНИЯ" на среднем ярусе -->
+                <rect x="174" y="246" width="192" height="34" rx="9" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
+                <text x="270" y="268" text-anchor="middle" fill="#1B365D" font-family="Unbounded" font-weight="800" font-size="12" letter-spacing="0.5">С ДНЁМ РОЖДЕНИЯ</text>
+
+                <!-- 3-Й (ВЕРХНИЙ) ЯРУС -->
+                <rect x="182" y="130" width="176" height="76" rx="15" fill="#8DA9C4" stroke="#1B365D" stroke-width="3"/>
+                <path d="M184 144 Q206 162 228 144 Q250 164 272 144 Q294 162 316 144 Q338 164 356 144 L356 138 Q356 130 340 130 L200 130 Q184 130 184 138 Z" fill="#FCFBF9"/>
+                <!-- Ягоды/акценты на стыках ярусов -->
+                <circle cx="152" cy="204" r="6" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
+                <circle cx="388" cy="204" r="6" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
+                <circle cx="116" cy="292" r="7" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
+                <circle cx="424" cy="292" r="7" fill="#E07A5F" stroke="#1B365D" stroke-width="1.8"/>
+
+                <!-- ПЯТЬ ПОЛОСАТЫХ СВЕЧЕЙ НА ВЕРХНЕМ ЯРУСЕ -->
+                <!-- Свеча 1 -->
+                <g transform="translate(202, 86)">
+                  <rect x="0" y="14" width="11" height="30" rx="3" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.2"/>
+                  <path d="M1 22 L10 17 M1 32 L10 27" stroke="#4A6FA5" stroke-width="2.5"/>
+                  <path class="candle-flame" d="M5.5 -4 C11 5 9.5 13 5.5 13 C1.5 13 0 5 5.5 -4 Z" fill="#E07A5F"/>
+                  <path class="smoke-trail" d="M5.5 8 Q1 0 6 -10 Q10 -20 5 -30" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </g>
+
+                <!-- Свеча 2 -->
+                <g transform="translate(232, 80)">
+                  <rect x="0" y="14" width="11" height="36" rx="3" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.2"/>
+                  <path d="M1 22 L10 17 M1 32 L10 27 M1 42 L10 37" stroke="#1B365D" stroke-width="2.5"/>
+                  <path class="candle-flame delay-1" d="M5.5 -5 C11.5 4 10 13 5.5 13 C1 13 -0.5 4 5.5 -5 Z" fill="#E07A5F"/>
+                  <path class="smoke-trail" d="M5.5 8 Q10 -2 5 -12 Q1 -22 6 -32" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </g>
+
+                <!-- Свеча 3 (Центральная высокая) -->
+                <g transform="translate(264, 72)">
+                  <rect x="0" y="14" width="12" height="44" rx="3.5" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
+                  <path d="M1 23 L11 18 M1 34 L11 29 M1 45 L11 40" stroke="#E07A5F" stroke-width="2.8"/>
+                  <path class="candle-flame delay-2" d="M6 -7 C13 4 11 13 6 13 C1 13 -1 4 6 -7 Z" fill="#E07A5F"/>
+                  <path class="smoke-trail" d="M6 8 Q1 -4 7 -15 Q12 -26 6 -38" stroke="#64748B" stroke-width="2.8" stroke-linecap="round" fill="none"/>
+                </g>
+
+                <!-- Свеча 4 -->
+                <g transform="translate(297, 80)">
+                  <rect x="0" y="14" width="11" height="36" rx="3" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.2"/>
+                  <path d="M1 22 L10 17 M1 32 L10 27 M1 42 L10 37" stroke="#1B365D" stroke-width="2.5"/>
+                  <path class="candle-flame delay-3" d="M5.5 -5 C11.5 4 10 13 5.5 13 C1 13 -0.5 4 5.5 -5 Z" fill="#E07A5F"/>
+                  <path class="smoke-trail" d="M5.5 8 Q1 -2 6 -12 Q10 -22 5 -32" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+                </g>
+
+                <!-- Свеча 5 -->
+                <g transform="translate(327, 86)">
+                  <rect x="0" y="14" width="11" height="30" rx="3" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.2"/>
+                  <path d="M1 22 L10 17 M1 32 L10 27" stroke="#4A6FA5" stroke-width="2.5"/>
+                  <path class="candle-flame delay-4" d="M5.5 -4 C11 5 9.5 13 5.5 13 C1.5 13 0 5 5.5 -4 Z" fill="#E07A5F"/>
+                  <path class="smoke-trail" d="M5.5 8 Q10 0 5 -10 Q1 -20 6 -30" stroke="#64748B" stroke-width="2.5" stroke-linecap="round" fill="none"/>
                 </g>
               </svg>
+            </div>
+
+            <!-- Кнопка управления свечами под тортом -->
+            <div class="cake-action-row">
+              <button type="button" class="btn-blow-candles" id="blowCandlesBtn" onclick="toggleCandles()">
+                <span id="blowCandlesIcon">💨</span>
+                <span id="blowCandlesLabel">Задуть свечи и загадать желание</span>
+              </button>
             </div>
           </div>
         </div>
 
         <!-- Нижняя сцена: Виниловый проигрыватель в коробке со звукоснимателем -->
-        <div class="vinyl-box-container">
+        <div class="vinyl-box-container anim-slide-up" style="animation-delay: 0.36s;">
           <div class="vinyl-box-lid">
             <div class="lid-ribbon-v"></div>
             <div class="lid-ribbon-h"></div>
@@ -1845,7 +2854,29 @@
               </div>
             </div>
 
-            <div class="vinyl-status" id="vinylStatusText">Нажми на пластинку, чтобы включить</div>
+            <div class="vinyl-status-row">
+              <div class="eq-bars" id="vinylEqBars" aria-hidden="true">
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+                <span class="eq-bar"></span>
+              </div>
+              <div class="vinyl-status" id="vinylStatusText">Нажми на пластинку, чтобы включить</div>
+            </div>
+
+            <div class="audio-controls-bar">
+              <button type="button" class="track-switch-btn" id="trackSwitchBtn" onclick="switchMusicTrack(event)" title="Переключить мелодию">
+                Трек 1: Праздничный бит
+              </button>
+              <label class="volume-control-wrap" title="Громкость музыки">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1B365D" stroke-width="2.5">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+                  <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0.2" max="1.0" step="0.05" value="0.95" oninput="updateMusicVolume(this.value)" />
+              </label>
+            </div>
           </div>
         </div>
       </div>
@@ -1885,10 +2916,50 @@
     };
 
     /* ========================================================================
-       1. НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ (SPA + КЛАВИАТУРА)
+       1. НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ (SPA + КЛАВИАТУРА + ПЕРЕЗАПУСК АНИМАЦИЙ)
        ======================================================================== */
     const SCREEN_ORDER = ['cover', 'surprise', 'letter', 'bouquet', 'cake'];
     let currentScreenId = 'cover';
+
+    let isIntroOpened = false;
+    function openIntroEnvelope() {
+      if (isIntroOpened) return;
+      isIntroOpened = true;
+      const overlay = document.getElementById('introOverlay');
+      if (!overlay) return;
+      overlay.classList.add('opening');
+      setTimeout(() => {
+        overlay.classList.add('opened');
+        animateCoverTitleLetters();
+      }, 420);
+    }
+
+    function animateCoverTitleLetters() {
+      const coverEl = document.getElementById('coverMainTitle');
+      if (!coverEl) return;
+      const rawLines = (CONFIG.texts.coverTitle || 'С ДНЁМ РОЖДЕНИЯ,\nДИАС!').split('\n');
+      let charIndex = 0;
+
+      coverEl.innerHTML = rawLines.map(line => {
+        const charsHtml = Array.from(line).map(ch => {
+          if (ch === ' ') return ' ';
+          const delay = (charIndex * 0.035).toFixed(3);
+          charIndex++;
+          return `<span class="char-pop" style="animation-delay: ${delay}s">${ch}</span>`;
+        }).join('');
+        return `<span style="display:inline-block">${charsHtml}</span>`;
+      }).join('<br>');
+    }
+
+    function replayScreenAnimations(screenEl) {
+      if (!screenEl) return;
+      const animatedNodes = screenEl.querySelectorAll('.anim-slide-up, .anim-slide-left, .anim-slide-right, .anim-drop-down');
+      animatedNodes.forEach(node => {
+        node.style.animation = 'none';
+        void node.offsetWidth;
+        node.style.animation = '';
+      });
+    }
 
     function navigateTo(screenId) {
       currentScreenId = screenId;
@@ -1899,6 +2970,11 @@
       const targetScreen = document.getElementById('screen-' + screenId);
       if (targetScreen) {
         targetScreen.classList.add('active');
+        replayScreenAnimations(targetScreen);
+      }
+
+      if (screenId === 'cover') {
+        animateCoverTitleLetters();
       }
 
       document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -1923,6 +2999,75 @@
     });
 
     /* ========================================================================
+       1.1. ПАСХАЛКА НА ДЕНЕЖНОМ БУКЕТЕ: КЛИКИ -> ТЕСТ НА ТУРЕЦКОМ -> 25 000 ТГ / ДЕПОРТАЦИЯ
+       ======================================================================== */
+    let bouquetClickCount = 0;
+    const BOUQUET_TAPS_REQUIRED = 5;
+
+    function handleBouquetClick() {
+      const bouquetSvg = document.getElementById('moneyBouquetSvg');
+      const hintBadge = document.getElementById('bouquetHintBadge');
+
+      if (bouquetSvg) {
+        bouquetSvg.classList.remove('bouquet-tap-burst');
+        void bouquetSvg.offsetWidth;
+        bouquetSvg.classList.add('bouquet-tap-burst');
+        setTimeout(() => {
+          bouquetSvg.classList.remove('bouquet-tap-burst');
+        }, 300);
+      }
+
+      bouquetClickCount++;
+      const remaining = BOUQUET_TAPS_REQUIRED - bouquetClickCount;
+
+      if (remaining > 0) {
+        if (hintBadge) {
+          hintBadge.innerHTML = `<span>👆 Ещё ${remaining} ${remaining === 1 ? 'нажатие' : 'нажатия'}...</span>`;
+        }
+      } else {
+        bouquetClickCount = 0;
+        if (hintBadge) {
+          hintBadge.innerHTML = `<span>👆 Нажми на букет несколько раз</span>`;
+        }
+        openTurkishQuiz();
+      }
+    }
+
+    function openTurkishQuiz() {
+      const overlay = document.getElementById('turkishQuizOverlay');
+      const questionStep = document.getElementById('quizQuestionStep');
+      const rewardStep = document.getElementById('quizRewardStep');
+
+      if (questionStep) questionStep.style.display = 'block';
+      if (rewardStep) rewardStep.style.display = 'none';
+      if (overlay) overlay.classList.add('open');
+    }
+
+    function closeTurkishQuiz() {
+      const overlay = document.getElementById('turkishQuizOverlay');
+      if (overlay) overlay.classList.remove('open');
+    }
+
+    function answerTurkishQuiz(isCorrect) {
+      if (isCorrect) {
+        const questionStep = document.getElementById('quizQuestionStep');
+        const rewardStep = document.getElementById('quizRewardStep');
+        if (questionStep) questionStep.style.display = 'none';
+        if (rewardStep) rewardStep.style.display = 'flex';
+      } else {
+        closeTurkishQuiz();
+        const deportOverlay = document.getElementById('deportationOverlay');
+        if (deportOverlay) deportOverlay.classList.add('open');
+      }
+    }
+
+    function closeDeportationOverlay() {
+      const deportOverlay = document.getElementById('deportationOverlay');
+      if (deportOverlay) deportOverlay.classList.remove('open');
+      navigateTo('bouquet');
+    }
+
+    /* ========================================================================
        2. ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ
        ======================================================================== */
     let toastTimeout = null;
@@ -1934,7 +3079,7 @@
       if (toastTimeout) clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => {
         banner.classList.remove('show');
-      }, 3000);
+      }, 3200);
     }
 
     /* ========================================================================
@@ -2055,108 +3200,407 @@
     });
 
     /* ========================================================================
-       4. ИНТЕРАКТИВНЫЕ СВЕЧИ НА ТОРТЕ
+       4. ЭПИЧНОЕ ЗАДУВАНИЕ СВЕЧЕЙ: БУМАЖНОЕ КОНФЕТТИ + ФАНФАРЫ + БАННЕР
        ======================================================================== */
     let areCandlesBlownOut = false;
 
+    function launchPaperConfettiBurst() {
+      const layer = document.getElementById('cakeConfettiLayer');
+      if (!layer) return;
+
+      const palette = ['#1B365D', '#4A6FA5', '#8DA9C4', '#D5C3AA', '#E07A5F', '#FCFBF9'];
+      const totalPieces = 56;
+
+      for (let i = 0; i < totalPieces; i++) {
+        const piece = document.createElement('span');
+        piece.className = 'paper-confetti-piece';
+
+        const fromLeft = i % 2 === 0;
+        const startX = fromLeft ? (18 + Math.random() * 24) : (58 + Math.random() * 24);
+        const startY = 34 + Math.random() * 18;
+
+        const tx1 = (fromLeft ? 1 : -1) * (30 + Math.random() * 140);
+        const ty1 = -(110 + Math.random() * 150);
+        const tx2 = tx1 + (Math.random() - 0.5) * 180;
+        const ty2 = 240 + Math.random() * 260;
+        const dur = (1.8 + Math.random() * 1.1).toFixed(2) + 's';
+
+        piece.style.left = startX + 'vw';
+        piece.style.top = startY + 'vh';
+        piece.style.backgroundColor = palette[i % palette.length];
+        piece.style.border = '1px solid rgba(27, 54, 93, 0.25)';
+        piece.style.setProperty('--tx1', tx1.toFixed(0) + 'px');
+        piece.style.setProperty('--ty1', ty1.toFixed(0) + 'px');
+        piece.style.setProperty('--tx2', tx2.toFixed(0) + 'px');
+        piece.style.setProperty('--ty2', ty2.toFixed(0) + 'px');
+        piece.style.setProperty('--dur', dur);
+
+        layer.appendChild(piece);
+        setTimeout(() => piece.remove(), 3100);
+      }
+    }
+
+    function playCelebrationFanfare() {
+      ensureAudioEngine();
+      const now = audioCtx.currentTime;
+
+      // Звук мягкого порыва ветра при задувании
+      const blowLen = Math.floor(audioCtx.sampleRate * 0.26);
+      const blowBuf = audioCtx.createBuffer(1, blowLen, audioCtx.sampleRate);
+      const blowData = blowBuf.getChannelData(0);
+      for (let i = 0; i < blowLen; i++) {
+        blowData[i] = (Math.random() * 2 - 1) * Math.sin((i / blowLen) * Math.PI);
+      }
+      const blowSrc = audioCtx.createBufferSource();
+      blowSrc.buffer = blowBuf;
+      const blowFilter = audioCtx.createBiquadFilter();
+      blowFilter.type = 'lowpass';
+      blowFilter.frequency.setValueAtTime(620, now);
+      const blowGain = audioCtx.createGain();
+      blowGain.gain.setValueAtTime(0.35, now);
+      blowGain.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
+      blowSrc.connect(blowFilter);
+      blowFilter.connect(blowGain);
+      blowGain.connect(compressorNode);
+      blowSrc.start(now);
+
+      // Торжественный праздничный аккорд-фанфара (C5 -> E5 -> G5 -> C6)
+      const fanfareNotes = [
+        { freq: 523.25, delay: 0.14, dur: 0.22 },
+        { freq: 659.25, delay: 0.26, dur: 0.22 },
+        { freq: 783.99, delay: 0.38, dur: 0.24 },
+        { freq: 1046.50, delay: 0.50, dur: 0.65 }
+      ];
+
+      fanfareNotes.forEach(n => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(n.freq, now + n.delay);
+
+        gain.gain.setValueAtTime(0.001, now + n.delay);
+        gain.gain.linearRampToValueAtTime(0.32, now + n.delay + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + n.delay + n.dur);
+
+        osc.connect(gain);
+        gain.connect(compressorNode);
+        osc.start(now + n.delay);
+        osc.stop(now + n.delay + n.dur + 0.04);
+      });
+    }
+
     function toggleCandles() {
       const cakeEl = document.getElementById('interactiveCake');
-      const hintEl = document.getElementById('cakeHintText');
+      const cardEl = document.getElementById('cakeCenterCard');
+      const btnEl = document.getElementById('blowCandlesBtn');
+      const iconEl = document.getElementById('blowCandlesIcon');
+      const labelEl = document.getElementById('blowCandlesLabel');
+
       areCandlesBlownOut = !areCandlesBlownOut;
 
       if (areCandlesBlownOut) {
         cakeEl.classList.add('candles-out');
-        hintEl.textContent = 'Желание загадано — нажми, чтобы зажечь снова';
-        showToast('Свечи задуты! Пусть сбудется всё задуманное, Диас');
+        if (cardEl) cardEl.classList.add('wish-granted');
+        if (btnEl) btnEl.classList.add('relight-mode');
+        if (iconEl) iconEl.textContent = '🔥';
+        if (labelEl) labelEl.textContent = 'Зажечь свечи снова';
+
+        launchPaperConfettiBurst();
+        playCelebrationFanfare();
+        showToast('Свечи задуты! Пусть сбудется всё задуманное, Диас!');
       } else {
         cakeEl.classList.remove('candles-out');
-        hintEl.textContent = 'Нажми на торт, чтобы задуть свечи';
+        if (cardEl) cardEl.classList.remove('wish-granted');
+        if (btnEl) btnEl.classList.remove('relight-mode');
+        if (iconEl) iconEl.textContent = '💨';
+        if (labelEl) labelEl.textContent = 'Задуть свечи и загадать желание';
       }
     }
 
     /* ========================================================================
-       5. ВИНИЛОВЫЙ ПРОИГРЫВАТЕЛЬ С ТОНАРМОМ И МЯГКИМ СИНТЕЗАТОРОМ
+       5. ГРОМКИЙ МНОГОДОРОЖЕЧНЫЙ СИНТЕЗАТОР (АККОРДЫ + БАС + МЕЛОДИЯ + РИТМ)
        ======================================================================== */
     let audioCtx = null;
+    let masterGainNode = null;
+    let compressorNode = null;
     let isPlayingMusic = false;
-    let melodyTimer = null;
+    let stepTimer = null;
     let notesVisualTimer = null;
-    let currentNoteIndex = 0;
+    let currentStepIndex = 0;
+    let currentTrackIndex = 0;
+    let masterVolumeLevel = 0.95;
 
-    const BIRTHDAY_MELODY = [
-      { freq: 261.63, dur: 0.35 },
-      { freq: 261.63, dur: 0.25 },
-      { freq: 293.66, dur: 0.55 },
-      { freq: 261.63, dur: 0.55 },
-      { freq: 349.23, dur: 0.55 },
-      { freq: 329.63, dur: 0.95 },
+    const MUSIC_TRACKS = [
+      {
+        name: "Трек 1: Праздничный бит",
+        stepMs: 210,
+        steps: [
+          { lead: 523.25, chord: [261.63, 329.63, 392.00], bass: 130.81, kick: true },
+          { hat: true },
+          { lead: 659.25, hat: true },
+          { lead: 783.99, bass: 130.81 },
+          { lead: 659.25, chord: [261.63, 329.63, 392.00], snare: true },
+          { hat: true },
+          { lead: 587.33, hat: true },
+          { lead: 523.25, bass: 164.81 },
 
-      { freq: 261.63, dur: 0.35 },
-      { freq: 261.63, dur: 0.25 },
-      { freq: 293.66, dur: 0.55 },
-      { freq: 261.63, dur: 0.55 },
-      { freq: 392.00, dur: 0.55 },
-      { freq: 349.23, dur: 0.95 },
+          { lead: 587.33, chord: [246.94, 293.66, 392.00], bass: 98.00, kick: true },
+          { hat: true },
+          { lead: 783.99, hat: true },
+          { lead: 880.00, bass: 98.00 },
+          { lead: 783.99, chord: [246.94, 293.66, 392.00], snare: true },
+          { hat: true },
+          { lead: 659.25, hat: true },
+          { lead: 587.33, bass: 123.47 },
 
-      { freq: 261.63, dur: 0.35 },
-      { freq: 261.63, dur: 0.25 },
-      { freq: 523.25, dur: 0.55 },
-      { freq: 440.00, dur: 0.55 },
-      { freq: 349.23, dur: 0.55 },
-      { freq: 329.63, dur: 0.55 },
-      { freq: 293.66, dur: 0.95 },
+          { lead: 659.25, chord: [220.00, 261.63, 329.63, 392.00], bass: 110.00, kick: true },
+          { hat: true },
+          { lead: 783.99, hat: true },
+          { lead: 880.00, bass: 110.00 },
+          { lead: 1046.50, chord: [220.00, 261.63, 329.63], snare: true },
+          { hat: true },
+          { lead: 880.00, hat: true },
+          { lead: 783.99, bass: 130.81 },
 
-      { freq: 466.16, dur: 0.35 },
-      { freq: 466.16, dur: 0.25 },
-      { freq: 440.00, dur: 0.55 },
-      { freq: 349.23, dur: 0.55 },
-      { freq: 392.00, dur: 0.55 },
-      { freq: 349.23, dur: 1.15 }
+          { lead: 698.46, chord: [220.00, 261.63, 349.23], bass: 87.31, kick: true },
+          { hat: true },
+          { lead: 880.00, hat: true },
+          { lead: 783.99, bass: 98.00 },
+          { lead: 659.25, chord: [246.94, 293.66, 392.00], snare: true, kick: true },
+          { hat: true },
+          { lead: 587.33, hat: true },
+          { lead: 523.25, bass: 130.81 }
+        ]
+      },
+      {
+        name: "Трек 2: Happy Birthday Remix",
+        stepMs: 240,
+        steps: [
+          { lead: 392.00, bass: 130.81, hat: true },
+          { lead: 392.00, hat: true },
+          { lead: 440.00, chord: [261.63, 329.63, 392.00], bass: 130.81, kick: true },
+          { hat: true },
+          { lead: 392.00, snare: true },
+          { hat: true },
+          { lead: 523.25, chord: [261.63, 329.63, 392.00], bass: 164.81, kick: true },
+          { hat: true },
+          { lead: 493.88, chord: [246.94, 293.66, 392.00], bass: 98.00, snare: true },
+          { hat: true },
+          { hat: true },
+          { bass: 98.00 },
+
+          { lead: 392.00, hat: true },
+          { lead: 392.00, hat: true },
+          { lead: 440.00, chord: [246.94, 293.66, 392.00], bass: 98.00, kick: true },
+          { hat: true },
+          { lead: 392.00, snare: true },
+          { hat: true },
+          { lead: 587.33, chord: [246.94, 293.66, 392.00], bass: 146.83, kick: true },
+          { hat: true },
+          { lead: 523.25, chord: [261.63, 329.63, 392.00], bass: 130.81, snare: true },
+          { hat: true },
+          { hat: true },
+          { bass: 130.81 },
+
+          { lead: 392.00, hat: true },
+          { lead: 392.00, hat: true },
+          { lead: 783.99, chord: [261.63, 329.63, 392.00], bass: 130.81, kick: true },
+          { hat: true },
+          { lead: 659.25, snare: true },
+          { hat: true },
+          { lead: 523.25, chord: [220.00, 261.63, 349.23], bass: 87.31, kick: true },
+          { hat: true },
+          { lead: 493.88, snare: true },
+          { hat: true },
+          { lead: 440.00, bass: 87.31, kick: true },
+          { hat: true },
+
+          { lead: 698.46, hat: true },
+          { lead: 698.46, hat: true },
+          { lead: 659.25, chord: [220.00, 261.63, 349.23], bass: 87.31, kick: true },
+          { hat: true },
+          { lead: 523.25, snare: true },
+          { hat: true },
+          { lead: 587.33, chord: [246.94, 293.66, 392.00], bass: 98.00, kick: true },
+          { hat: true },
+          { lead: 523.25, chord: [261.63, 329.63, 392.00], bass: 130.81, snare: true, kick: true },
+          { hat: true },
+          { hat: true },
+          { hat: true }
+        ]
+      }
     ];
 
-    function playSynthNote(freq, duration) {
-      if (!audioCtx) return;
-      const now = audioCtx.currentTime;
+    function ensureAudioEngine() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
 
-      const oscMain = audioCtx.createOscillator();
-      const oscWarm = audioCtx.createOscillator();
-      const filter = audioCtx.createBiquadFilter();
-      const gainNode = audioCtx.createGain();
+        compressorNode = audioCtx.createDynamicsCompressor();
+        compressorNode.threshold.setValueAtTime(-16, audioCtx.currentTime);
+        compressorNode.knee.setValueAtTime(12, audioCtx.currentTime);
+        compressorNode.ratio.setValueAtTime(4, audioCtx.currentTime);
+        compressorNode.attack.setValueAtTime(0.005, audioCtx.currentTime);
+        compressorNode.release.setValueAtTime(0.18, audioCtx.currentTime);
 
-      oscMain.type = 'sine';
-      oscMain.frequency.setValueAtTime(freq, now);
+        masterGainNode = audioCtx.createGain();
+        masterGainNode.gain.setValueAtTime(masterVolumeLevel * 1.45, audioCtx.currentTime);
 
-      oscWarm.type = 'triangle';
-      oscWarm.frequency.setValueAtTime(freq * 0.5, now);
-
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(950, now);
-
-      gainNode.gain.setValueAtTime(0.001, now);
-      gainNode.gain.exponentialRampToValueAtTime(0.16, now + 0.04);
-      gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
-
-      oscMain.connect(filter);
-      oscWarm.connect(filter);
-      filter.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-
-      oscMain.start(now);
-      oscWarm.start(now);
-      oscMain.stop(now + duration + 0.05);
-      oscWarm.stop(now + duration + 0.05);
+        compressorNode.connect(masterGainNode);
+        masterGainNode.connect(audioCtx.destination);
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
     }
 
-    function scheduleNextNote() {
+    function updateMusicVolume(val) {
+      masterVolumeLevel = parseFloat(val);
+      if (masterGainNode && audioCtx) {
+        masterGainNode.gain.setTargetAtTime(masterVolumeLevel * 1.45, audioCtx.currentTime, 0.03);
+      }
+    }
+
+    function switchMusicTrack(event) {
+      if (event) event.stopPropagation();
+      currentTrackIndex = (currentTrackIndex + 1) % MUSIC_TRACKS.length;
+      currentStepIndex = 0;
+      const btn = document.getElementById('trackSwitchBtn');
+      if (btn) btn.textContent = MUSIC_TRACKS[currentTrackIndex].name;
+
+      if (isPlayingMusic) {
+        if (stepTimer) clearTimeout(stepTimer);
+        scheduleNextMusicStep();
+        showToast('Включён ' + MUSIC_TRACKS[currentTrackIndex].name);
+      }
+    }
+
+    function triggerLeadVoice(freq, durSec) {
+      const now = audioCtx.currentTime;
+      const osc1 = audioCtx.createOscillator();
+      const osc2 = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gain = audioCtx.createGain();
+
+      osc1.type = 'triangle';
+      osc1.frequency.setValueAtTime(freq, now);
+
+      osc2.type = 'sawtooth';
+      osc2.frequency.setValueAtTime(freq * 1.003, now);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(2200, now);
+      filter.frequency.exponentialRampToValueAtTime(900, now + durSec);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.32, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gain);
+      gain.connect(compressorNode);
+
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + durSec + 0.03);
+      osc2.stop(now + durSec + 0.03);
+    }
+
+    function triggerChordPad(freqs, durSec) {
+      const now = audioCtx.currentTime;
+      freqs.forEach(f => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, now);
+
+        gain.gain.setValueAtTime(0.001, now);
+        gain.gain.linearRampToValueAtTime(0.11, now + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+        osc.connect(gain);
+        gain.connect(compressorNode);
+        osc.start(now);
+        osc.stop(now + durSec + 0.04);
+      });
+    }
+
+    function triggerBassVoice(freq, durSec) {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.001, now);
+      gain.gain.linearRampToValueAtTime(0.36, now + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + durSec);
+
+      osc.connect(gain);
+      gain.connect(compressorNode);
+      osc.start(now);
+      osc.stop(now + durSec + 0.03);
+    }
+
+    function triggerDrumVoice(type) {
+      const now = audioCtx.currentTime;
+      if (type === 'kick') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(135, now);
+        osc.frequency.exponentialRampToValueAtTime(42, now + 0.12);
+
+        gain.gain.setValueAtTime(0.45, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+        osc.connect(gain);
+        gain.connect(compressorNode);
+        osc.start(now);
+        osc.stop(now + 0.15);
+      } else {
+        const bufferSize = Math.floor(audioCtx.sampleRate * (type === 'snare' ? 0.11 : 0.045));
+        const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+        const data = buffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+
+        const noise = audioCtx.createBufferSource();
+        noise.buffer = buffer;
+
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = type === 'snare' ? 'bandpass' : 'highpass';
+        filter.frequency.setValueAtTime(type === 'snare' ? 1400 : 6500, now);
+
+        const gain = audioCtx.createGain();
+        gain.gain.setValueAtTime(type === 'snare' ? 0.18 : 0.06, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + (type === 'snare' ? 0.11 : 0.045));
+
+        noise.connect(filter);
+        filter.connect(gain);
+        gain.connect(compressorNode);
+        noise.start(now);
+      }
+    }
+
+    function scheduleNextMusicStep() {
       if (!isPlayingMusic) return;
 
-      const note = BIRTHDAY_MELODY[currentNoteIndex];
-      playSynthNote(note.freq, note.dur);
+      const track = MUSIC_TRACKS[currentTrackIndex];
+      const step = track.steps[currentStepIndex];
+      const stepSec = track.stepMs / 1000;
 
-      currentNoteIndex = (currentNoteIndex + 1) % BIRTHDAY_MELODY.length;
-      const pauseBetween = currentNoteIndex === 0 ? 750 : 60;
+      if (step.lead) triggerLeadVoice(step.lead, stepSec * 1.45);
+      if (step.chord) triggerChordPad(step.chord, stepSec * 3.2);
+      if (step.bass) triggerBassVoice(step.bass, stepSec * 1.6);
+      if (step.kick) triggerDrumVoice('kick');
+      if (step.snare) triggerDrumVoice('snare');
+      if (step.hat) triggerDrumVoice('hat');
 
-      melodyTimer = setTimeout(scheduleNextNote, note.dur * 1000 + pauseBetween);
+      currentStepIndex = (currentStepIndex + 1) % track.steps.length;
+      stepTimer = setTimeout(scheduleNextMusicStep, track.stepMs);
     }
 
     function spawnFloatingNote() {
@@ -2182,45 +3626,43 @@
     function toggleMusic() {
       const discEl = document.getElementById('vinylDisc');
       const tonearmEl = document.getElementById('vinylTonearm');
+      const eqBarsEl = document.getElementById('vinylEqBars');
       const labelEl = document.getElementById('vinylLabelText');
       const statusEl = document.getElementById('vinylStatusText');
 
       if (!isPlayingMusic) {
-        if (!audioCtx) {
-          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-          audioCtx = new AudioContextClass();
-        }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
+        ensureAudioEngine();
 
         isPlayingMusic = true;
         tonearmEl.classList.add('engaged');
         discEl.classList.add('spinning');
+        if (eqBarsEl) eqBarsEl.classList.add('playing');
         labelEl.textContent = 'Пауза';
-        statusEl.textContent = 'Играет мелодия для Диаса';
+        statusEl.textContent = 'Играет музыка для Диаса';
 
         setTimeout(() => {
           if (isPlayingMusic) {
-            scheduleNextNote();
+            scheduleNextMusicStep();
             spawnFloatingNote();
-            notesVisualTimer = setInterval(spawnFloatingNote, 680);
+            notesVisualTimer = setInterval(spawnFloatingNote, 620);
           }
-        }, 280);
+        }, 250);
       } else {
         isPlayingMusic = false;
         tonearmEl.classList.remove('engaged');
         discEl.classList.remove('spinning');
+        if (eqBarsEl) eqBarsEl.classList.remove('playing');
         labelEl.textContent = 'Нажми';
         statusEl.textContent = 'Пластинка на паузе';
 
-        if (melodyTimer) clearTimeout(melodyTimer);
+        if (stepTimer) clearTimeout(stepTimer);
         if (notesVisualTimer) clearInterval(notesVisualTimer);
       }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
       initPhotosAndTexts();
+      setTimeout(openIntroEnvelope, 1100);
     });
   </script>
 </body>
