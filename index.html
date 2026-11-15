@@ -1,0 +1,2228 @@
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>С Днём Рождения, Диас!</title>
+
+  <!-- Выразительная редакционная типографика с поддержкой кириллицы -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       1. ПАЛИТРА И ПЕРЕМЕННЫЕ (СПОКОЙНЫЕ МАТОВЫЕ ОТТЕНКИ БУМАГИ И ЧЕРНИЛ)
+       ========================================================================== */
+    :root {
+      --ink: #1B365D;
+      --ink-deep: #132642;
+      --slate: #4A6FA5;
+      --slate-light: #8DA9C4;
+      --sky-muted: #DCE6F2;
+      --paper: #F6F2EA;
+      --paper-warm: #EDE6D8;
+      --paper-white: #FCFBF9;
+      --kraft: #D5C3AA;
+      --charcoal: #222831;
+      --muted-text: #526071;
+      --border-subtle: rgba(27, 54, 93, 0.22);
+      --shadow-soft: 0 14px 34px rgba(19, 38, 66, 0.12);
+      --shadow-card: 0 8px 24px rgba(19, 38, 66, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      min-height: 100vh;
+      font-family: 'Golos Text', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--charcoal);
+      background-color: var(--paper);
+      overflow-x: hidden;
+    }
+
+    /* Текстура матовой дизайнерской бумаги поверх всего сайта */
+    .paper-grain {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3000;
+      opacity: 0.032;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* ==========================================================================
+       2. ВЕРХНЯЯ ПАНЕЛЬ НАВИГАЦИИ
+       ========================================================================== */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 62px;
+      background: rgba(252, 251, 249, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1.5px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      z-index: 1000;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .nav-brand-tag {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--paper-white);
+      background: var(--ink);
+      padding: 5px 11px;
+      border-radius: 6px;
+    }
+
+    .nav-brand-text {
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .nav-links::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: 1.5px solid transparent;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--muted-text);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn:hover {
+      color: var(--ink);
+      background: rgba(74, 111, 165, 0.1);
+    }
+
+    .nav-btn.active {
+      background: var(--ink);
+      color: var(--paper-white);
+    }
+
+    /* ==========================================================================
+       3. КОНТЕЙНЕР ЭКРАНОВ (SPA) И ПЕРЕХОДЫ
+       ========================================================================== */
+    .app-container {
+      padding-top: 62px;
+      min-height: 100vh;
+      width: 100%;
+    }
+
+    .screen {
+      display: none;
+      min-height: calc(100vh - 62px);
+      width: 100%;
+      padding: 32px 24px 48px;
+      position: relative;
+      animation: pageReveal 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .screen.active {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @keyframes pageReveal {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ==========================================================================
+       4. ТАКТИЛЬНЫЕ ФОНЫ (ЛИНОВАНАЯ БУМАГА, ТКАНЕВАЯ КЛЕТКА, ОБОИ В ПОЛОСКУ)
+       ========================================================================== */
+    .bg-cover {
+      background-color: var(--paper-white);
+      background-image:
+        linear-gradient(to right, rgba(74, 111, 165, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(74, 111, 165, 0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
+    }
+
+    .bg-gingham {
+      background-color: #F4EFE6;
+      background-image:
+        linear-gradient(90deg, rgba(74, 111, 165, 0.22) 50%, transparent 50%),
+        linear-gradient(rgba(74, 111, 165, 0.22) 50%, transparent 50%);
+      background-size: 84px 84px;
+    }
+
+    .bg-stationery {
+      background-color: var(--paper);
+      background-image: radial-gradient(rgba(27, 54, 93, 0.11) 1.25px, transparent 1.25px);
+      background-size: 22px 22px;
+    }
+
+    .bg-stripes {
+      background-color: var(--paper);
+      background-image: repeating-linear-gradient(
+        90deg,
+        #EFE9DD 0px,
+        #EFE9DD 48px,
+        #DCE5F0 48px,
+        #DCE5F0 96px
+      );
+      padding-top: 66px;
+    }
+
+    .top-valance {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 40px;
+      overflow: hidden;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Кусочки полупрозрачного бумажного скотча (Washi Tape) */
+    .washi-tape {
+      position: absolute;
+      width: 84px;
+      height: 22px;
+      background: rgba(141, 169, 196, 0.42);
+      border-left: 1px dashed rgba(27, 54, 93, 0.2);
+      border-right: 1px dashed rgba(27, 54, 93, 0.2);
+      backdrop-filter: blur(1px);
+      z-index: 8;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       5. ОБЩИЕ ЭЛЕМЕНТЫ УПРАВЛЕНИЯ
+       ========================================================================== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: var(--ink);
+      color: var(--paper-white);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      padding: 15px 34px;
+      border: 2px solid var(--ink);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(27, 54, 93, 0.22);
+      cursor: pointer;
+      transition: transform 0.18s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      user-select: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--ink-deep);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(27, 54, 93, 0.28);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .btn-back-wrap {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      z-index: 10;
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--paper-white);
+      border: 1.5px solid rgba(27, 54, 93, 0.35);
+      border-radius: 10px;
+      padding: 9px 20px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: 0.92rem;
+      color: var(--ink);
+      box-shadow: 0 4px 12px rgba(19, 38, 66, 0.08);
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .btn-back:hover {
+      background: var(--sky-muted);
+      border-color: var(--ink);
+      transform: translateX(-2px);
+    }
+
+    /* ==========================================================================
+       6. ЭКРАН 1: ОБЛОЖКА
+       ========================================================================== */
+    .cover-grid {
+      max-width: 1080px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      align-items: center;
+      gap: 40px;
+      z-index: 5;
+    }
+
+    .cover-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .cover-kicker {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--slate);
+      background: var(--sky-muted);
+      padding: 6px 14px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .cover-title {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2rem, 3.8vw, 3.1rem);
+      line-height: 1.15;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      margin-bottom: 22px;
+    }
+
+    .cat-sticker {
+      width: 100%;
+      max-width: 310px;
+      align-self: center;
+      filter: drop-shadow(0 12px 20px rgba(19, 38, 66, 0.14));
+      transition: transform 0.3s ease;
+    }
+
+    .cat-sticker:hover {
+      transform: rotate(-2deg) scale(1.02);
+    }
+
+    .cover-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--paper-white);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 32px 28px 36px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+    }
+
+    .edition-stamp {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--ink);
+      border: 2px solid var(--ink);
+      padding: 6px 16px;
+      border-radius: 6px;
+      letter-spacing: 0.08em;
+      transform: rotate(-2deg);
+      margin-bottom: 6px;
+      background: var(--paper);
+    }
+
+    .gift-illustration {
+      width: 100%;
+      max-width: 340px;
+      margin-bottom: 12px;
+    }
+
+    /* ==========================================================================
+       7. ЭКРАН 2: МЕНЮ ВЫБОРА («ТВОЙ СЮРПРИЗ»)
+       ========================================================================== */
+    .surprise-header {
+      text-align: center;
+      max-width: 720px;
+      margin-bottom: 36px;
+      z-index: 5;
+      background: rgba(252, 251, 249, 0.92);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 18px 28px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .surprise-title {
+      font-family: 'Unbounded', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.35rem, 2.6vw, 2.05rem);
+      color: var(--ink);
+      line-height: 1.28;
+    }
+
+    .cards-row {
+      max-width: 1020px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 26px;
+      align-items: stretch;
+      z-index: 5;
+    }
+
+    .surprise-card {
+      background: var(--paper-white);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 20px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.24s ease, border-color 0.24s ease;
+      position: relative;
+    }
+
+    .surprise-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--ink);
+      box-shadow: 0 18px 34px rgba(19, 38, 66, 0.16);
+    }
+
+    .card-index {
+      position: absolute;
+      top: 14px;
+      left: 16px;
+      font-family: 'Unbounded', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--slate);
+    }
+
+    .shield-frame {
+      width: 100%;
+      max-width: 230px;
+      aspect-ratio: 1 / 1.02;
+      background-color: var(--paper);
+      background-image:
+        linear-gradient(90deg, rgba(74, 111, 165, 0.18) 50%, transparent 50%),
+        linear-gradient(rgba(74, 111, 165, 0.18) 50%, transparent 50%);
+      background-size: 28px 28px;
+      border: 1.5px solid rgba(27, 54, 93, 0.25);
+      border-radius: 28px 28px 68px 68px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 12px 0 20px;
+    }
+
+    .shield-inner {
+      width: 100%;
+      height: 100%;
+      background: var(--paper-white);
+      border: 1.5px solid rgba(27, 54, 93, 0.2);
+      border-radius: 20px 20px 54px 54px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .shield-inner svg {
+      width: 82%;
+      height: 82%;
+      transition: transform 0.28s ease;
+    }
+
+    .surprise-card:hover .shield-inner svg {
+      transform: scale(1.06);
+    }
+
+    .card-label-btn {
+      width: 100%;
+      text-align: center;
+      background: var(--paper);
+      color: var(--ink);
+      border: 1.5px solid rgba(27, 54, 93, 0.25);
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .surprise-card:hover .card-label-btn {
+      background: var(--ink);
+      color: var(--paper-white);
+      border-color: var(--ink);
+    }
+
+    /* ==========================================================================
+       8. ЭКРАН 3: ПИСЬМО
+       ========================================================================== */
+    .letter-layout {
+      max-width: 1040px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .envelope-box {
+      width: 44%;
+      max-width: 410px;
+      z-index: 1;
+      margin-right: -38px;
+      filter: drop-shadow(0 14px 24px rgba(19, 38, 66, 0.15));
+    }
+
+    .letter-paper {
+      width: 60%;
+      max-width: 580px;
+      background: var(--paper-white);
+      border: 1.5px solid rgba(27, 54, 93, 0.26);
+      border-radius: 6px;
+      padding: 36px 38px 34px;
+      box-shadow: 0 18px 40px rgba(19, 38, 66, 0.14);
+      z-index: 2;
+      position: relative;
+      background-image: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 34px,
+        rgba(74, 111, 165, 0.14) 35px
+      );
+    }
+
+    .letter-paper .tape-top-left {
+      top: -10px;
+      left: 24px;
+      transform: rotate(-8deg);
+    }
+
+    .letter-paper .tape-top-right {
+      top: -10px;
+      right: 24px;
+      transform: rotate(7deg);
+    }
+
+    .letter-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid rgba(27, 54, 93, 0.18);
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .letter-heading {
+      font-family: 'Caveat', cursive;
+      font-weight: 700;
+      font-size: clamp(2.1rem, 3.2vw, 2.65rem);
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .letter-date {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--slate);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .letter-body p {
+      font-family: 'Caveat', cursive;
+      font-weight: 600;
+      font-size: clamp(1.45rem, 2.15vw, 1.74rem);
+      line-height: 1.44;
+      color: var(--charcoal);
+      margin-bottom: 14px;
+    }
+
+    .letter-body p:last-child {
+      margin-bottom: 0;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
+       9. ЭКРАН 4: ДЕНЕЖНЫЙ БУКЕТ
+       ========================================================================== */
+    .bouquet-layout {
+      max-width: 1020px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      align-items: center;
+      gap: 40px;
+      z-index: 5;
+    }
+
+    .bouquet-art {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .bouquet-art svg {
+      width: 100%;
+      max-width: 390px;
+      filter: drop-shadow(0 16px 26px rgba(19, 38, 66, 0.15));
+    }
+
+    .bouquet-card {
+      background: var(--paper-white);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 36px 34px;
+      box-shadow: var(--shadow-soft);
+      position: relative;
+    }
+
+    .bouquet-tag {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink);
+      background: var(--sky-muted);
+      padding: 5px 12px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+
+    .bouquet-text {
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 600;
+      font-size: clamp(1.15rem, 2vw, 1.42rem);
+      line-height: 1.55;
+      color: var(--ink);
+    }
+
+    /* ==========================================================================
+       10. ЭКРАН 5: ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ВИНИЛОВЫЙ ПРОИГРЫВАТЕЛЬ
+       ========================================================================== */
+    .cake-screen-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 30px;
+      z-index: 5;
+    }
+
+    .cake-top-stage {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1.12fr;
+      align-items: center;
+      gap: 30px;
+    }
+
+    /* Галерея из 3 рамок (2 Polaroid со скотчем + 1 винтажная рамка-зеркало) */
+    .photo-gallery-zone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      position: relative;
+      padding: 14px;
+    }
+
+    .polaroid-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .photo-slot {
+      background: var(--paper-white);
+      border: 1px solid rgba(27, 54, 93, 0.18);
+      box-shadow: 0 10px 24px rgba(19, 38, 66, 0.14);
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .photo-slot:hover {
+      transform: scale(1.04) rotate(0deg) !important;
+      box-shadow: 0 16px 32px rgba(19, 38, 66, 0.22);
+      z-index: 6;
+    }
+
+    .polaroid-frame {
+      width: 172px;
+      padding: 10px 10px 28px 10px;
+      border-radius: 4px;
+    }
+
+    .polaroid-frame .washi-tape {
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 64px;
+      height: 18px;
+    }
+
+    .polaroid-1 {
+      transform: rotate(-3.5deg);
+    }
+
+    .polaroid-2 {
+      transform: rotate(2.5deg) translateX(12px);
+    }
+
+    .polaroid-img-box {
+      width: 100%;
+      height: 132px;
+      background: var(--sky-muted);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .polaroid-caption {
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-family: 'Caveat', cursive;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--ink);
+      pointer-events: none;
+    }
+
+    /* Винтажная овальная рамка-ЗЕРКАЛО для детского фото */
+    .mirror-wrapper {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transform: rotate(2.5deg);
+      transition: transform 0.25s ease;
+    }
+
+    .mirror-wrapper:hover {
+      transform: rotate(0deg) scale(1.04);
+      z-index: 6;
+    }
+
+    .mirror-crest {
+      margin-bottom: -8px;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .oval-frame {
+      width: 172px;
+      height: 234px;
+      border-radius: 50%;
+      padding: 11px;
+      background: linear-gradient(155deg, #E2E8F0 0%, #8DA9C4 45%, #3B5B8C 100%);
+      border: 2px solid var(--ink);
+      box-shadow:
+        0 14px 28px rgba(19, 38, 66, 0.22),
+        inset 0 2px 5px rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .oval-img-box {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: var(--sky-muted);
+      border: 2.5px solid var(--paper-white);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      box-shadow: inset 0 0 14px rgba(19, 38, 66, 0.24);
+    }
+
+    /* Деликатный стеклянный блик зеркала */
+    .oval-img-box::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: linear-gradient(
+        130deg,
+        rgba(255, 255, 255, 0.34) 0%,
+        rgba(255, 255, 255, 0.08) 32%,
+        transparent 34%
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .photo-slot img,
+    .oval-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .oval-img-box img {
+      object-position: center 44%;
+      transform: scale(1.16);
+    }
+
+    #slot-photo1 img {
+      object-position: center 22%;
+    }
+
+    .photo-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px;
+      color: var(--ink);
+      gap: 6px;
+    }
+
+    .photo-placeholder span {
+      font-weight: 600;
+      font-size: 0.76rem;
+      line-height: 1.25;
+    }
+
+    .photo-edit-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(27, 54, 93, 0.88);
+      color: var(--paper-white);
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    .photo-slot:hover .photo-edit-badge,
+    .oval-frame:hover .photo-edit-badge {
+      opacity: 1;
+    }
+
+    /* Блок с тортом */
+    .cake-center-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .cake-hint {
+      background: var(--paper-white);
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 7px 16px;
+      font-weight: 600;
+      font-size: 0.86rem;
+      color: var(--ink);
+      margin-bottom: 10px;
+      box-shadow: 0 4px 12px rgba(19, 38, 66, 0.08);
+    }
+
+    .cake-svg-wrapper {
+      width: 100%;
+      max-width: 430px;
+      cursor: pointer;
+      filter: drop-shadow(0 14px 22px rgba(19, 38, 66, 0.16));
+      transition: transform 0.2s ease;
+    }
+
+    .cake-svg-wrapper:hover {
+      transform: scale(1.015);
+    }
+
+    .candle-flame {
+      transform-origin: center bottom;
+      animation: flickerFlame 0.7s infinite alternate ease-in-out;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .candle-flame.delay-1 { animation-delay: 0.18s; }
+    .candle-flame.delay-2 { animation-delay: 0.35s; }
+
+    @keyframes flickerFlame {
+      0% { transform: scale(1) rotate(-1.5deg); }
+      50% { transform: scale(1.06, 0.95) rotate(1.5deg); }
+      100% { transform: scale(0.96, 1.04) rotate(-1deg); }
+    }
+
+    .candles-out .candle-flame {
+      opacity: 0;
+      transform: scale(0);
+    }
+
+    .smoke-puff {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .candles-out .smoke-puff {
+      animation: smokeRise 1.6s ease-out forwards;
+    }
+
+    @keyframes smokeRise {
+      0% { opacity: 0.75; transform: translateY(0) scale(0.7); }
+      100% { opacity: 0; transform: translateY(-32px) scale(1.5); }
+    }
+
+    /* Интерактивная коробка с виниловой пластинкой и звукоснимателем */
+    .vinyl-box-container {
+      width: 100%;
+      max-width: 800px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--paper-white);
+      border: 1.5px solid rgba(27, 54, 93, 0.28);
+      border-radius: 18px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+
+    .vinyl-box-lid {
+      background-color: #4A6FA5;
+      background-image:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.16) 50%, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.16) 50%, transparent 50%);
+      background-size: 36px 36px;
+      border-right: 1.5px solid rgba(27, 54, 93, 0.25);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 232px;
+    }
+
+    .lid-ribbon-v {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 22px;
+      background: var(--ink);
+    }
+
+    .lid-ribbon-h {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 22px;
+      background: var(--ink);
+    }
+
+    .lid-cat-badge {
+      position: relative;
+      z-index: 2;
+      background: var(--paper-white);
+      border: 2px solid var(--ink);
+      border-radius: 50%;
+      width: 152px;
+      height: 152px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 18px rgba(19, 38, 66, 0.2);
+      padding: 8px;
+    }
+
+    .vinyl-box-tray {
+      background: radial-gradient(circle at center, #FCFBF9 0%, #EAE3D5 100%);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      min-height: 232px;
+    }
+
+    /* Подвижный звукосниматель (игла) проигрывателя */
+    .turntable-tonearm {
+      position: absolute;
+      top: 16px;
+      right: 26px;
+      width: 56px;
+      height: 118px;
+      transform-origin: 40px 16px;
+      transform: rotate(0deg);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .turntable-tonearm.engaged {
+      transform: rotate(25deg);
+    }
+
+    .vinyl-disc-btn {
+      width: 178px;
+      height: 178px;
+      border-radius: 50%;
+      background:
+        repeating-radial-gradient(
+          circle at center,
+          #161920 0px,
+          #161920 3px,
+          #252A34 4px,
+          #161920 5px
+        );
+      border: 3px solid #0E1015;
+      box-shadow: 0 10px 22px rgba(19, 38, 66, 0.26);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    .vinyl-disc-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .vinyl-disc-btn.spinning {
+      animation: spinVinyl 4.5s linear infinite;
+    }
+
+    @keyframes spinVinyl {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .vinyl-label {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: var(--ink);
+      border: 2px solid var(--kraft);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--paper-white);
+      font-family: 'Golos Text', sans-serif;
+      font-weight: 700;
+      font-size: 0.78rem;
+      letter-spacing: 0.02em;
+      z-index: 2;
+      position: relative;
+    }
+
+    .vinyl-spindle {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--paper);
+      margin-top: 4px;
+    }
+
+    .music-notes-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .floating-note {
+      position: absolute;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--ink);
+      animation: noteFloatUp 1.8s ease-out forwards;
+    }
+
+    @keyframes noteFloatUp {
+      0% {
+        opacity: 0;
+        transform: translateY(0) scale(0.7);
+      }
+      25% {
+        opacity: 0.85;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-90px) translateX(var(--dx, 14px)) scale(1.1);
+      }
+    }
+
+    .vinyl-status {
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 0.84rem;
+      color: var(--ink);
+    }
+
+    /* Всплывающее уведомление */
+    .toast-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--ink);
+      color: var(--paper-white);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      border-radius: 10px;
+      padding: 11px 22px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 12px 28px rgba(19, 38, 66, 0.28);
+      z-index: 2000;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      text-align: center;
+      max-width: 92vw;
+    }
+
+    .toast-banner.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ==========================================================================
+       11. АДАПТИВНАЯ ВЁРСТКА
+       ========================================================================== */
+    @media (max-width: 900px) {
+      .navbar {
+        padding: 0 14px;
+        height: 56px;
+      }
+
+      .nav-brand-text {
+        display: none;
+      }
+
+      .nav-btn {
+        padding: 6px 10px;
+        font-size: 0.82rem;
+      }
+
+      .app-container {
+        padding-top: 56px;
+      }
+
+      .screen {
+        min-height: calc(100vh - 56px);
+        padding: 24px 16px 38px;
+      }
+
+      .cover-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .cover-left {
+        align-items: center;
+        text-align: center;
+      }
+
+      .cat-sticker {
+        max-width: 230px;
+      }
+
+      .gift-illustration {
+        max-width: 270px;
+      }
+
+      .cards-row {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+        gap: 20px;
+      }
+
+      .shield-frame {
+        max-width: 210px;
+      }
+
+      .letter-layout {
+        flex-direction: column;
+      }
+
+      .envelope-box {
+        width: 78%;
+        max-width: 290px;
+        margin-right: 0;
+        margin-bottom: -24px;
+      }
+
+      .letter-paper {
+        width: 100%;
+        padding: 26px 20px;
+      }
+
+      .bouquet-layout {
+        grid-template-columns: 1fr;
+        gap: 26px;
+      }
+
+      .bouquet-art svg {
+        max-width: 280px;
+      }
+
+      .bouquet-card {
+        padding: 26px 22px;
+      }
+
+      .cake-top-stage {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+
+      .photo-gallery-zone {
+        flex-wrap: wrap;
+      }
+
+      .polaroid-frame {
+        width: 148px;
+      }
+
+      .polaroid-img-box {
+        height: 112px;
+      }
+
+      .oval-frame {
+        width: 150px;
+        height: 202px;
+      }
+
+      .vinyl-box-container {
+        grid-template-columns: 1fr;
+      }
+
+      .vinyl-box-lid {
+        border-right: none;
+        border-bottom: 1.5px solid rgba(27, 54, 93, 0.25);
+        min-height: 185px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Слой матовой текстуры бумаги -->
+  <div class="paper-grain" aria-hidden="true"></div>
+
+  <!-- ========================================================================
+       ВЕРХНЯЯ ПАНЕЛЬ НАВИГАЦИИ
+       ======================================================================== -->
+  <header class="navbar">
+    <div class="nav-brand" onclick="navigateTo('cover')" title="На главную">
+      <span class="nav-brand-tag">ДИАС</span>
+      <span class="nav-brand-text">Открытка ко дню рождения</span>
+    </div>
+
+    <nav class="nav-links" aria-label="Навигация по открытке">
+      <button class="nav-btn active" data-target="cover" onclick="navigateTo('cover')">С Днём Рождения</button>
+      <button class="nav-btn" data-target="surprise" onclick="navigateTo('surprise')">Твой сюрприз</button>
+      <button class="nav-btn" data-target="letter" onclick="navigateTo('letter')">Письмо</button>
+      <button class="nav-btn" data-target="bouquet" onclick="navigateTo('bouquet')">Букет</button>
+      <button class="nav-btn" data-target="cake" onclick="navigateTo('cake')">Торт</button>
+    </nav>
+  </header>
+
+  <!-- Скрытый input для загрузки фотографий с устройства -->
+  <input type="file" id="photoFileInput" accept="image/*" style="display: none;" />
+
+  <!-- Всплывающее уведомление -->
+  <div id="toastBanner" class="toast-banner" role="status" aria-live="polite"></div>
+
+  <main class="app-container">
+
+    <!-- ======================================================================
+         ЭКРАН 1: ОБЛОЖКА («С Днём Рождения»)
+         ====================================================================== -->
+    <section id="screen-cover" class="screen bg-cover active">
+      <div class="cover-grid">
+        <!-- Левая колонка: Редакционный заголовок + Стикер кота в колпаке -->
+        <div class="cover-left">
+          <span class="cover-kicker">Специальный выпуск</span>
+          <h1 class="cover-title" id="coverMainTitle">С ДНЁМ РОЖДЕНИЯ,<br>ДИАС!</h1>
+
+          <!-- Иллюстрация кота в праздничном колпаке в стиле вырезного бумажного стикера -->
+          <svg class="cat-sticker" viewBox="0 0 360 320" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Кот в праздничном колпаке">
+            <!-- Следы лап -->
+            <g fill="#4A6FA5" opacity="0.45">
+              <g transform="translate(46, 86) rotate(-24)">
+                <ellipse cx="16" cy="22" rx="9" ry="7"/>
+                <circle cx="6" cy="10" r="3.5"/>
+                <circle cx="14" cy="7" r="3.5"/>
+                <circle cx="23" cy="9" r="3.5"/>
+                <circle cx="28" cy="15" r="3"/>
+              </g>
+              <g transform="translate(284, 72) rotate(22)">
+                <ellipse cx="16" cy="22" rx="9" ry="7"/>
+                <circle cx="6" cy="10" r="3.5"/>
+                <circle cx="14" cy="7" r="3.5"/>
+                <circle cx="23" cy="9" r="3.5"/>
+                <circle cx="28" cy="15" r="3"/>
+              </g>
+              <g transform="translate(292, 224) rotate(18)">
+                <ellipse cx="16" cy="22" rx="9" ry="7"/>
+                <circle cx="6" cy="10" r="3.5"/>
+                <circle cx="14" cy="7" r="3.5"/>
+                <circle cx="23" cy="9" r="3.5"/>
+                <circle cx="28" cy="15" r="3"/>
+              </g>
+            </g>
+
+            <!-- Белая вырезная подложка стикера -->
+            <ellipse cx="180" cy="206" rx="96" ry="82" fill="#FFFFFF"/>
+            <ellipse cx="180" cy="206" rx="88" ry="74" fill="#ECE4D5" stroke="#1B365D" stroke-width="2.5"/>
+
+            <!-- Уши -->
+            <path d="M104 156 L92 104 L142 132 Z" fill="#D8CEBE" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M108 148 L101 116 L132 134 Z" fill="#8DA9C4"/>
+
+            <path d="M256 156 L268 104 L218 132 Z" fill="#D8CEBE" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M252 148 L259 116 L228 134 Z" fill="#8DA9C4"/>
+
+            <!-- Полоски шерсти -->
+            <path d="M166 138 L166 154 M180 134 L180 156 M194 138 L194 154" stroke="#7A869A" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M98 196 L120 200 M96 212 L118 212" stroke="#7A869A" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M262 196 L240 200 M264 212 L242 212" stroke="#7A869A" stroke-width="3.5" stroke-linecap="round"/>
+
+            <!-- Полосатый колпак -->
+            <g transform="translate(180, 92) rotate(-6)">
+              <path d="M-36 38 L0 -62 L36 38 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M-22 4 L13 -22 M-30 24 L24 -5" stroke="#DCE6F2" stroke-width="6" stroke-linecap="round"/>
+              <path d="M-36 38 L0 -62 L36 38 Z" fill="none" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="0" cy="-66" r="10" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-40" y="32" width="80" height="11" rx="5.5" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
+            </g>
+
+            <!-- Довольные глаза, нос и улыбка -->
+            <path d="M128 196 Q144 178 160 196" fill="none" stroke="#222831" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M200 196 Q216 178 232 196" fill="none" stroke="#222831" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M173 212 L187 212 L180 221 Z" fill="#1B365D"/>
+            <path d="M158 228 Q169 240 180 226 Q191 240 202 228" fill="none" stroke="#222831" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M173 233 Q180 252 187 233 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2"/>
+
+            <!-- Усы -->
+            <path d="M134 218 L86 210 M134 226 L88 232" stroke="#222831" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M226 218 L274 210 M226 226 L272 232" stroke="#222831" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Правая колонка: Карточка с подарочной коробкой и кнопкой -->
+        <div class="cover-right">
+          <div class="edition-stamp">НОВЫЙ УРОВЕНЬ</div>
+
+          <svg class="gift-illustration" viewBox="0 0 420 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Подарочная коробка с воздушными шарами">
+            <circle cx="210" cy="180" r="138" fill="#DCE6F2" opacity="0.65"/>
+
+            <!-- Нити шаров -->
+            <path d="M78 152 Q98 205 130 240" stroke="#1B365D" stroke-width="1.8" stroke-dasharray="4 3"/>
+            <path d="M114 108 Q126 172 148 220" stroke="#1B365D" stroke-width="1.8"/>
+            <path d="M310 106 Q294 172 275 220" stroke="#1B365D" stroke-width="1.8"/>
+            <path d="M346 152 Q326 205 292 240" stroke="#1B365D" stroke-width="1.8" stroke-dasharray="4 3"/>
+
+            <!-- Воздушные шары -->
+            <ellipse cx="76" cy="116" rx="28" ry="35" transform="rotate(-14 76 116)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+            <ellipse cx="114" cy="72" rx="26" ry="33" transform="rotate(-6 114 72)" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+            <ellipse cx="308" cy="72" rx="26" ry="33" transform="rotate(8 308 72)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
+            <ellipse cx="346" cy="116" rx="28" ry="35" transform="rotate(15 346 116)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+
+            <!-- Подарочная коробка -->
+            <g transform="translate(0, 12)">
+              <rect x="116" y="170" width="188" height="138" rx="10" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="118" y="170" width="184" height="12" fill="#4A6FA5" opacity="0.35"/>
+              <rect x="193" y="170" width="34" height="138" fill="#1B365D"/>
+
+              <rect x="106" y="138" width="208" height="34" rx="8" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="191" y="138" width="38" height="34" fill="#1B365D"/>
+
+              <!-- Бант -->
+              <path d="M210 138 C166 86 118 106 150 138 Z" fill="#1B365D" stroke="#132642" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M210 138 C254 86 302 106 270 138 Z" fill="#1B365D" stroke="#132642" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M210 138 C182 98 152 114 176 138 Z" fill="#4A6FA5"/>
+              <path d="M210 138 C238 98 268 114 244 138 Z" fill="#4A6FA5"/>
+              <rect x="195" y="123" width="30" height="22" rx="6" fill="#1B365D" stroke="#D5C3AA" stroke-width="2"/>
+            </g>
+          </svg>
+
+          <button class="btn-primary" onclick="navigateTo('surprise')">
+            <span>Открыть сюрприз</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ЭКРАН 2: МЕНЮ ВЫБОРА («Твой сюрприз»)
+         ====================================================================== -->
+    <section id="screen-surprise" class="screen bg-gingham">
+      <div class="surprise-header">
+        <h2 class="surprise-title">Сюрприз ко дню рождения специально для тебя, Диас!</h2>
+      </div>
+
+      <div class="cards-row">
+        <!-- Карточка 1: Письмо -->
+        <div class="surprise-card" onclick="navigateTo('letter')" role="button" tabindex="0" aria-label="Открыть письмо">
+          <span class="card-index">01</span>
+          <div class="shield-frame">
+            <div class="shield-inner">
+              <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="18" y="34" width="104" height="74" rx="10" fill="#8DA9C4" stroke="#1B365D" stroke-width="3"/>
+                <path d="M20 38 L70 78 L120 38" fill="#DCE6F2" stroke="#1B365D" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M20 104 L54 70 M120 104 L86 70" stroke="#1B365D" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="70" cy="76" r="13" fill="#1B365D"/>
+                <text x="70" y="81" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="700" font-size="11">Д</text>
+              </svg>
+            </div>
+          </div>
+          <span class="card-label-btn">Письмо</span>
+        </div>
+
+        <!-- Карточка 2: Денежный букет -->
+        <div class="surprise-card" onclick="navigateTo('bouquet')" role="button" tabindex="0" aria-label="Открыть букет">
+          <span class="card-index">02</span>
+          <div class="shield-frame">
+            <div class="shield-inner">
+              <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="34" y="26" width="30" height="54" rx="4" transform="rotate(-24 34 26)" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
+                <rect x="55" y="18" width="30" height="56" rx="4" fill="#95D5AC" stroke="#1B365D" stroke-width="2.5"/>
+                <rect x="78" y="22" width="30" height="54" rx="4" transform="rotate(24 78 22)" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
+                <text x="65" y="45" fill="#1B365D" font-family="Unbounded" font-weight="700" font-size="12">$</text>
+                <path d="M32 62 L108 62 L84 122 L56 122 Z" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M40 62 L100 62 L80 112 L60 112 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+                <rect x="54" y="96" width="32" height="10" rx="5" fill="#1B365D"/>
+              </svg>
+            </div>
+          </div>
+          <span class="card-label-btn">Букет</span>
+        </div>
+
+        <!-- Карточка 3: Торт -->
+        <div class="surprise-card" onclick="navigateTo('cake')" role="button" tabindex="0" aria-label="Открыть торт">
+          <span class="card-index">03</span>
+          <div class="shield-frame">
+            <div class="shield-inner">
+              <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="20" y="110" width="100" height="8" rx="4" fill="#1B365D"/>
+                <rect x="28" y="78" width="84" height="32" rx="6" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+                <path d="M28 84 Q42 93 56 84 Q70 93 84 84 Q98 93 112 84" stroke="#FCFBF9" stroke-width="3.5" fill="none"/>
+                <rect x="42" y="50" width="56" height="28" rx="6" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
+                <rect x="54" y="30" width="6" height="20" rx="2" fill="#FCFBF9" stroke="#1B365D" stroke-width="2"/>
+                <rect x="67" y="26" width="6" height="24" rx="2" fill="#4A6FA5" stroke="#1B365D" stroke-width="2"/>
+                <rect x="80" y="30" width="6" height="20" rx="2" fill="#FCFBF9" stroke="#1B365D" stroke-width="2"/>
+                <path d="M57 18 Q61 24 57 28 Q53 24 57 18 Z" fill="#E07A5F"/>
+                <path d="M70 14 Q74 20 70 24 Q66 20 70 14 Z" fill="#E07A5F"/>
+                <path d="M83 18 Q87 24 83 28 Q79 24 83 18 Z" fill="#E07A5F"/>
+              </svg>
+            </div>
+          </div>
+          <span class="card-label-btn">Торт</span>
+        </div>
+      </div>
+
+      <div class="btn-back-wrap">
+        <button class="btn-back" onclick="navigateTo('cover')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Назад</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ЭКРАН 3: ПИСЬМО («Письмо»)
+         ====================================================================== -->
+    <section id="screen-letter" class="screen bg-stationery">
+      <div class="letter-layout">
+        <!-- Левая часть: Раскрытый клетчатый конверт -->
+        <div class="envelope-box">
+          <svg viewBox="0 0 420 380" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Раскрытый конверт">
+            <defs>
+              <pattern id="envGingham" width="32" height="32" patternUnits="userSpaceOnUse">
+                <rect width="32" height="32" fill="#F6F2EA"/>
+                <rect width="16" height="32" fill="#4A6FA5" fill-opacity="0.24"/>
+                <rect width="32" height="16" fill="#1B365D" fill-opacity="0.22"/>
+              </pattern>
+            </defs>
+
+            <path d="M36 146 L210 26 L384 146 Z" fill="url(#envGingham)" stroke="#1B365D" stroke-width="3" stroke-linejoin="round"/>
+            <rect x="36" y="146" width="348" height="208" rx="10" fill="#DCE6F2" stroke="#1B365D" stroke-width="3"/>
+            <path d="M36 146 L195 250 L36 354 Z" fill="url(#envGingham)" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M384 146 L225 250 L384 354 Z" fill="url(#envGingham)" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M36 354 L210 226 L384 354 Z" fill="url(#envGingham)" stroke="#1B365D" stroke-width="3" stroke-linejoin="round"/>
+
+            <!-- Лента на конверте -->
+            <g transform="translate(88, 128) rotate(-18)">
+              <path d="M0 0 C-34 -32 -60 -6 -22 14 Z" fill="#1B365D"/>
+              <path d="M0 0 C34 -32 60 -6 22 14 Z" fill="#1B365D"/>
+              <path d="M-8 10 L-24 54 L-10 46 L-2 12 Z" fill="#1B365D"/>
+              <path d="M8 10 L24 54 L10 46 L2 12 Z" fill="#1B365D"/>
+              <circle cx="0" cy="4" r="9" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5"/>
+            </g>
+
+            <!-- Сургучная печать -->
+            <g transform="translate(92, 272)">
+              <circle cx="0" cy="0" r="30" fill="#1B365D" stroke="#FCFBF9" stroke-width="3"/>
+              <circle cx="0" cy="0" r="22" fill="none" stroke="#D5C3AA" stroke-width="1.5"/>
+              <text x="0" y="7" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="700" font-size="18">Д</text>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Правая часть: Лист бумаги со скотчем по углам -->
+        <article class="letter-paper">
+          <div class="washi-tape tape-top-left"></div>
+          <div class="washi-tape tape-top-right"></div>
+
+          <div class="letter-header">
+            <h2 class="letter-heading" id="letterHeadingText">С Днём Рождения, Диас!</h2>
+            <span class="letter-date">Личное письмо</span>
+          </div>
+
+          <div class="letter-body" id="letterBodyContainer">
+            <p>Диас, поздравляю тебя с днём рождения! Спасибо тебе за то, что всегда остаёшься надёжной опорой, примером и человеком, на которого можно положиться в любой ситуации.</p>
+            <p>Желаю тебе железного здоровья, мощной энергии и уверенности в каждом шаге. Пусть все цели, которые ты перед собой ставишь, достигаются без лишних преград, проекты приносят крутой результат, а рядом всегда будут верные люди.</p>
+            <p>Только вперёд и только вверх, Диас! С праздником!</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="btn-back-wrap">
+        <button class="btn-back" onclick="navigateTo('surprise')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Назад</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ЭКРАН 4: ДЕНЕЖНЫЙ БУКЕТ («Букет»)
+         ====================================================================== -->
+    <section id="screen-bouquet" class="screen bg-stationery">
+      <div class="bouquet-layout">
+        <!-- Левая часть: Иллюстрация букета из купюр -->
+        <div class="bouquet-art">
+          <svg viewBox="0 0 420 430" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Букет из денежных купюр">
+            <circle cx="205" cy="195" r="154" fill="#DCE6F2" opacity="0.7"/>
+
+            <!-- Упаковочная бумага -->
+            <path d="M74 165 L210 68 L346 165 L254 362 L166 362 Z" fill="#1B365D" stroke="#132642" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M92 172 L210 90 L328 172 L248 358 L172 358 Z" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+
+            <!-- Веер из 7 денежных купюр -->
+            <g transform="translate(135, 195) rotate(-38)">
+              <rect x="-32" y="-115" width="64" height="130" rx="5" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-24" y="-106" width="48" height="112" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5" stroke-dasharray="4 2"/>
+              <circle cx="0" cy="-55" r="14" fill="#D8F3DC" stroke="#1B4332" stroke-width="1.5"/>
+              <text x="-11" y="-51" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="10">100</text>
+            </g>
+
+            <g transform="translate(160, 185) rotate(-22)">
+              <rect x="-32" y="-122" width="64" height="136" rx="5" fill="#95D5AC" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-24" y="-113" width="48" height="118" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5"/>
+              <circle cx="0" cy="-60" r="15" fill="#D8F3DC" stroke="#1B4332" stroke-width="1.5"/>
+              <text x="-11" y="-56" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="10">100</text>
+            </g>
+
+            <g transform="translate(185, 180) rotate(-8)">
+              <rect x="-32" y="-128" width="64" height="140" rx="5" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-24" y="-119" width="48" height="122" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5"/>
+              <circle cx="0" cy="-65" r="15" fill="#D8F3DC" stroke="#1B4332" stroke-width="1.5"/>
+              <text x="-6" y="-60" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="13">$</text>
+            </g>
+
+            <g transform="translate(210, 178)">
+              <rect x="-34" y="-132" width="68" height="144" rx="5" fill="#B7E4C7" stroke="#1B365D" stroke-width="3"/>
+              <rect x="-25" y="-122" width="50" height="124" rx="3" fill="none" stroke="#1B4332" stroke-width="1.8"/>
+              <circle cx="0" cy="-66" r="17" fill="#FCFBF9" stroke="#1B4332" stroke-width="2"/>
+              <text x="-13" y="-62" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="11">100</text>
+              <text x="-16" y="-102" fill="#1B4332" font-family="Golos Text" font-weight="700" font-size="9">CASH</text>
+            </g>
+
+            <g transform="translate(235, 180) rotate(9)">
+              <rect x="-32" y="-128" width="64" height="140" rx="5" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-24" y="-119" width="48" height="122" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5"/>
+              <circle cx="0" cy="-65" r="15" fill="#D8F3DC" stroke="#1B4332" stroke-width="1.5"/>
+              <text x="-6" y="-60" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="13">$</text>
+            </g>
+
+            <g transform="translate(260, 185) rotate(23)">
+              <rect x="-32" y="-122" width="64" height="136" rx="5" fill="#95D5AC" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-24" y="-113" width="48" height="118" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5"/>
+              <circle cx="0" cy="-60" r="15" fill="#D8F3DC" stroke="#1B4332" stroke-width="1.5"/>
+              <text x="-11" y="-56" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="10">100</text>
+            </g>
+
+            <g transform="translate(285, 195) rotate(38)">
+              <rect x="-32" y="-115" width="64" height="130" rx="5" fill="#6BBF8A" stroke="#1B365D" stroke-width="2.5"/>
+              <rect x="-24" y="-106" width="48" height="112" rx="3" fill="none" stroke="#1B4332" stroke-width="1.5" stroke-dasharray="4 2"/>
+              <circle cx="0" cy="-55" r="14" fill="#D8F3DC" stroke="#1B4332" stroke-width="1.5"/>
+              <text x="-11" y="-51" fill="#1B4332" font-family="Unbounded" font-weight="700" font-size="10">100</text>
+            </g>
+
+            <!-- Передние отвороты крафтовой и синей бумаги -->
+            <path d="M98 198 L210 264 L172 394 L142 394 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M322 198 L210 264 L248 394 L278 394 Z" fill="#3B5B8C" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M124 224 L210 272 L296 224 L254 402 L166 402 Z" fill="#E3D5C1" stroke="#1B365D" stroke-width="3" stroke-linejoin="round"/>
+
+            <!-- Лента и бант -->
+            <rect x="166" y="312" width="88" height="20" rx="6" fill="#1B365D"/>
+            <path d="M210 322 C172 294 148 318 182 330 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
+            <path d="M210 322 C248 294 272 318 238 330 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
+            <path d="M198 330 L174 396 L192 388 L206 332 Z" fill="#1B365D"/>
+            <path d="M222 330 L246 396 L228 388 L214 332 Z" fill="#1B365D"/>
+            <rect x="198" y="313" width="24" height="18" rx="5" fill="#D5C3AA" stroke="#1B365D" stroke-width="2"/>
+          </svg>
+        </div>
+
+        <!-- Правая часть: Карточка с пожеланием -->
+        <div class="bouquet-card">
+          <span class="bouquet-tag">Практичный подарок</span>
+          <p class="bouquet-text" id="bouquetTextContent">
+            Обычные цветы быстро завянут, поэтому держи правильный букет! Пусть твой бюджет всегда растёт, доходы только умножаются, а финансов с запасом хватает на любые идеи, цели и мечты.
+          </p>
+        </div>
+      </div>
+
+      <div class="btn-back-wrap">
+        <button class="btn-back" onclick="navigateTo('surprise')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Назад</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         ЭКРАН 5: ТОРТ, ФОТО (POLAROID + ЗЕРКАЛО) И ПРОИГРЫВАТЕЛЬ («Торт»)
+         ====================================================================== -->
+    <section id="screen-cake" class="screen bg-stripes">
+      <!-- Волнистый бордюр сверху -->
+      <div class="top-valance" aria-hidden="true">
+        <svg width="100%" height="40" preserveAspectRatio="none" viewBox="0 0 1200 40">
+          <path d="M0,0 L1200,0 L1200,22 Q1150,40 1100,22 Q1050,40 1000,22 Q950,40 900,22 Q850,40 800,22 Q750,40 700,22 Q650,40 600,22 Q550,40 500,22 Q450,40 400,22 Q350,40 300,22 Q250,40 200,22 Q150,40 100,22 Q50,40 0,22 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2.5"/>
+        </svg>
+      </div>
+
+      <div class="cake-screen-wrapper">
+        <!-- Верхняя сцена: 3 рамки для фото слева + Торт по центру/справа -->
+        <div class="cake-top-stage">
+          <!-- Блок для 3 фотографий -->
+          <div class="photo-gallery-zone">
+            <!-- Две рамки Polaroid со скотчем (Фото 1 и Фото 2) -->
+            <div class="polaroid-stack">
+              <div class="photo-slot polaroid-frame polaroid-1" onclick="triggerPhotoUpload('photo1')" title="Нажми, чтобы выбрать или заменить фото">
+                <div class="washi-tape"></div>
+                <div class="polaroid-img-box" id="slot-photo1">
+                  <div class="photo-placeholder">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B365D" stroke-width="2">
+                      <rect x="3" y="5" width="18" height="14" rx="3"/>
+                      <circle cx="8.5" cy="10.5" r="1.5"/>
+                      <path d="M21 15l-5-5L5 19"/>
+                    </svg>
+                    <span>Добавить фото 1</span>
+                  </div>
+                </div>
+                <span class="polaroid-caption">Диас</span>
+                <span class="photo-edit-badge">Заменить</span>
+              </div>
+
+              <div class="photo-slot polaroid-frame polaroid-2" onclick="triggerPhotoUpload('photo2')" title="Нажми, чтобы выбрать или заменить фото">
+                <div class="washi-tape"></div>
+                <div class="polaroid-img-box" id="slot-photo2">
+                  <div class="photo-placeholder">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B365D" stroke-width="2">
+                      <rect x="3" y="5" width="18" height="14" rx="3"/>
+                      <circle cx="8.5" cy="10.5" r="1.5"/>
+                      <path d="M21 15l-5-5L5 19"/>
+                    </svg>
+                    <span>Добавить фото 2</span>
+                  </div>
+                </div>
+                <span class="polaroid-caption">Вместе</span>
+                <span class="photo-edit-badge">Заменить</span>
+              </div>
+            </div>
+
+            <!-- Овальная винтажная рамка-ЗЕРКАЛО для детского фото (Фото 3) -->
+            <div class="mirror-wrapper" onclick="triggerPhotoUpload('photo3')" title="Детское фото в рамке-зеркале (нажми, чтобы заменить)">
+              <svg class="mirror-crest" width="72" height="22" viewBox="0 0 72 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 20 C15 7, 26 16, 36 4 C46 16, 57 7, 66 20 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2" stroke-linejoin="round"/>
+                <circle cx="36" cy="12" r="3.5" fill="#FCFBF9" stroke="#1B365D" stroke-width="1.8"/>
+              </svg>
+
+              <div class="oval-frame">
+                <div class="oval-img-box" id="slot-photo3">
+                  <div class="photo-placeholder">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1B365D" stroke-width="2">
+                      <rect x="3" y="5" width="18" height="14" rx="3"/>
+                      <circle cx="8.5" cy="10.5" r="1.5"/>
+                      <path d="M21 15l-5-5L5 19"/>
+                    </svg>
+                    <span>Детское фото</span>
+                  </div>
+                </div>
+                <span class="photo-edit-badge">Заменить</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Двухъярусный праздничный торт с интерактивными свечами -->
+          <div class="cake-center-zone">
+            <div class="cake-hint" id="cakeHintText">Нажми на торт, чтобы задуть свечи</div>
+
+            <div class="cake-svg-wrapper" id="interactiveCake" onclick="toggleCandles()" role="button" tabindex="0" aria-label="Праздничный торт со свечами">
+              <svg viewBox="0 0 460 355" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Два шара справа от торта -->
+                <path d="M358 145 Q345 195 338 235" stroke="#1B365D" stroke-width="2"/>
+                <path d="M396 168 Q376 208 352 242" stroke="#1B365D" stroke-width="2"/>
+                <ellipse cx="362" cy="105" rx="28" ry="36" transform="rotate(10 362 105)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5"/>
+                <ellipse cx="404" cy="132" rx="26" ry="33" transform="rotate(18 404 132)" fill="#1B365D" stroke="#132642" stroke-width="2.5"/>
+
+                <!-- Подставка под торт -->
+                <ellipse cx="215" cy="322" rx="162" ry="18" fill="#FCFBF9" stroke="#1B365D" stroke-width="3"/>
+                <rect x="180" y="324" width="70" height="15" rx="5" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
+
+                <!-- Нижний ярус торта -->
+                <rect x="76" y="216" width="278" height="104" rx="18" fill="#4A6FA5" stroke="#1B365D" stroke-width="3"/>
+                <path d="M78 232 Q106 254 134 232 Q162 254 190 232 Q218 254 246 232 Q274 254 302 232 Q330 254 352 232 L352 224 Q352 216 334 216 L96 216 Q78 216 78 224 Z" fill="#FCFBF9"/>
+                <path d="M88 292 Q130 310 172 292 Q215 310 258 292 Q300 310 342 292" stroke="#D5C3AA" stroke-width="3.5" stroke-dasharray="2 8" stroke-linecap="round"/>
+
+                <!-- Верхний ярус торта -->
+                <rect x="112" y="124" width="206" height="94" rx="16" fill="#8DA9C4" stroke="#1B365D" stroke-width="3"/>
+                <path d="M114 140 Q138 160 162 140 Q186 160 210 140 Q234 160 258 140 Q282 160 316 140 L316 132 Q316 124 298 124 L132 124 Q114 124 114 132 Z" fill="#FCFBF9"/>
+
+                <!-- Табличка с надписью на торте -->
+                <rect x="132" y="162" width="166" height="36" rx="8" fill="#1B365D"/>
+                <text x="215" y="185" text-anchor="middle" fill="#FCFBF9" font-family="Unbounded" font-weight="700" font-size="11.5" letter-spacing="0.4">С ДНЁМ РОЖДЕНИЯ</text>
+
+                <!-- Три полосатые свечи -->
+                <g transform="translate(156, 66)">
+                  <rect x="0" y="16" width="14" height="42" rx="4" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
+                  <path d="M2 26 L12 20 M2 38 L12 32 M2 50 L12 44" stroke="#4A6FA5" stroke-width="3"/>
+                  <path class="candle-flame" d="M7 -4 C14 6 12 15 7 15 C2 15 0 6 7 -4 Z" fill="#E07A5F"/>
+                  <circle class="smoke-puff" cx="7" cy="4" r="5" fill="#94A3B8"/>
+                </g>
+
+                <g transform="translate(208, 56)">
+                  <rect x="0" y="16" width="14" height="52" rx="4" fill="#DCE6F2" stroke="#1B365D" stroke-width="2.5"/>
+                  <path d="M2 26 L12 20 M2 38 L12 32 M2 50 L12 44 M2 62 L12 56" stroke="#1B365D" stroke-width="3"/>
+                  <path class="candle-flame delay-1" d="M7 -6 C15 5 13 15 7 15 C1 15 -1 5 7 -6 Z" fill="#E07A5F"/>
+                  <circle class="smoke-puff" cx="7" cy="4" r="5" fill="#94A3B8"/>
+                </g>
+
+                <g transform="translate(260, 66)">
+                  <rect x="0" y="16" width="14" height="42" rx="4" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
+                  <path d="M2 26 L12 20 M2 38 L12 32 M2 50 L12 44" stroke="#4A6FA5" stroke-width="3"/>
+                  <path class="candle-flame delay-2" d="M7 -4 C14 6 12 15 7 15 C2 15 0 6 7 -4 Z" fill="#E07A5F"/>
+                  <circle class="smoke-puff" cx="7" cy="4" r="5" fill="#94A3B8"/>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Нижняя сцена: Виниловый проигрыватель в коробке со звукоснимателем -->
+        <div class="vinyl-box-container">
+          <div class="vinyl-box-lid">
+            <div class="lid-ribbon-v"></div>
+            <div class="lid-ribbon-h"></div>
+            <div class="lid-cat-badge">
+              <svg viewBox="0 0 200 200" width="128" height="128" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="100" cy="122" rx="60" ry="50" fill="#ECE4D5" stroke="#1B365D" stroke-width="3"/>
+                <path d="M52 88 L44 54 L76 72 Z" fill="#D8CEBE" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+                <path d="M148 88 L156 54 L124 72 Z" fill="#D8CEBE" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+                <g transform="translate(100, 48) rotate(-5)">
+                  <path d="M-24 24 L0 -42 L24 24 Z" fill="#4A6FA5" stroke="#1B365D" stroke-width="2.5" stroke-linejoin="round"/>
+                  <circle cx="0" cy="-45" r="7" fill="#D5C3AA" stroke="#1B365D" stroke-width="2"/>
+                  <rect x="-26" y="20" width="52" height="8" rx="4" fill="#FCFBF9" stroke="#1B365D" stroke-width="2.5"/>
+                </g>
+                <path d="M66 116 Q78 102 90 116" stroke="#222831" stroke-width="4" stroke-linecap="round"/>
+                <path d="M110 116 Q122 102 134 116" stroke="#222831" stroke-width="4" stroke-linecap="round"/>
+                <path d="M94 126 L106 126 L100 133 Z" fill="#1B365D"/>
+                <path d="M84 136 Q92 146 100 135 Q108 146 116 136" stroke="#222831" stroke-width="3" stroke-linecap="round"/>
+                <path d="M95 140 Q100 153 105 140 Z" fill="#8DA9C4" stroke="#1B365D" stroke-width="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="vinyl-box-tray">
+            <div class="music-notes-layer" id="musicNotesLayer"></div>
+
+            <!-- Подвижный тонарм (звукосниматель) проигрывателя -->
+            <svg class="turntable-tonearm" id="vinylTonearm" viewBox="0 0 60 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <circle cx="42" cy="18" r="12" fill="#D5C3AA" stroke="#1B365D" stroke-width="2.5"/>
+              <circle cx="42" cy="18" r="5" fill="#1B365D"/>
+              <path d="M42 26 L42 78 L26 102" stroke="#1B365D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+              <rect x="17" y="96" width="14" height="18" rx="3" transform="rotate(28 17 96)" fill="#4A6FA5" stroke="#1B365D" stroke-width="2"/>
+            </svg>
+
+            <div class="vinyl-disc-btn" id="vinylDisc" onclick="toggleMusic()" role="button" tabindex="0" aria-label="Включить или поставить на паузу музыку">
+              <div class="vinyl-label">
+                <span id="vinylLabelText">Нажми</span>
+                <div class="vinyl-spindle"></div>
+              </div>
+            </div>
+
+            <div class="vinyl-status" id="vinylStatusText">Нажми на пластинку, чтобы включить</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-back-wrap">
+        <button class="btn-back" onclick="navigateTo('surprise')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
+          </svg>
+          <span>Назад</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    /* ========================================================================
+       НАСТРОЙКИ САЙТА (CONFIG) — ТВОИ 3 ФОТОГРАФИИ И ТЕКСТЫ ДЛЯ ДИАСА
+       ======================================================================== */
+    const CONFIG = {
+      photos: {
+        photo1: "1000080928.jpg", // Первая рамка Polaroid (портрет Диаса на закате)
+        photo2: "1000080930.jpg", // Вторая рамка Polaroid (совместное фото вдвоём)
+        photo3: "1000080945.jpg"  // Овальная рамка-ЗЕРКАЛО (детское фото, где вы маленькие)
+      },
+      texts: {
+        coverTitle: "С ДНЁМ РОЖДЕНИЯ,\nДИАС!",
+        letterHeading: "С Днём Рождения, Диас!",
+        letterParagraphs: [
+          "Диас, поздравляю тебя с днём рождения! Спасибо тебе за то, что всегда остаёшься надёжной опорой, примером и человеком, на которого можно положиться в любой ситуации.",
+          "Желаю тебе железного здоровья, мощной энергии и уверенности в каждом шаге. Пусть все цели, которые ты перед собой ставишь, достигаются без лишних преград, проекты приносят крутой результат, а рядом всегда будут верные люди.",
+          "Только вперёд и только вверх, Диас! С праздником!"
+        ],
+        bouquetText: "Обычные цветы быстро завянут, поэтому держи правильный букет! Пусть твой бюджет всегда растёт, доходы только умножаются, а финансов с запасом хватает на любые идеи, цели и мечты."
+      }
+    };
+
+    /* ========================================================================
+       1. НАВИГАЦИЯ МЕЖДУ ЭКРАНАМИ (SPA + КЛАВИАТУРА)
+       ======================================================================== */
+    const SCREEN_ORDER = ['cover', 'surprise', 'letter', 'bouquet', 'cake'];
+    let currentScreenId = 'cover';
+
+    function navigateTo(screenId) {
+      currentScreenId = screenId;
+      document.querySelectorAll('.screen').forEach(sec => {
+        sec.classList.remove('active');
+      });
+
+      const targetScreen = document.getElementById('screen-' + screenId);
+      if (targetScreen) {
+        targetScreen.classList.add('active');
+      }
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        if (btn.dataset.target === screenId) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+      const idx = SCREEN_ORDER.indexOf(currentScreenId);
+      if (e.key === 'ArrowRight' && idx < SCREEN_ORDER.length - 1) {
+        navigateTo(SCREEN_ORDER[idx + 1]);
+      } else if (e.key === 'ArrowLeft' && idx > 0) {
+        navigateTo(SCREEN_ORDER[idx - 1]);
+      }
+    });
+
+    /* ========================================================================
+       2. ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ
+       ======================================================================== */
+    let toastTimeout = null;
+    function showToast(message) {
+      const banner = document.getElementById('toastBanner');
+      banner.textContent = message;
+      banner.classList.add('show');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        banner.classList.remove('show');
+      }, 3000);
+    }
+
+    /* ========================================================================
+       3. РАБОТА С ФОТОГРАФИЯМИ (CONFIG + LOCALSTORAGE + ВЫБОР С УСТРОЙСТВА)
+       ======================================================================== */
+    let activePhotoSlotKey = null;
+    const STORAGE_PREFIX = 'dias_card_photo_';
+
+    function renderPhotoInSlot(slotKey, imageSrc, fallbackSrc = '') {
+      const container = document.getElementById('slot-' + slotKey);
+      if (!container || !imageSrc) return;
+
+      const img = document.createElement('img');
+      img.src = imageSrc;
+      img.alt = slotKey === 'photo3' ? 'Детское фото Диаса' : 'Фото с Диасом';
+
+      img.onload = function () {
+        container.innerHTML = '';
+        container.appendChild(img);
+      };
+
+      img.onerror = function () {
+        if (fallbackSrc) {
+          renderPhotoInSlot(slotKey, fallbackSrc, '');
+        }
+      };
+    }
+
+    function initPhotosAndTexts() {
+      const coverEl = document.getElementById('coverMainTitle');
+      if (coverEl && CONFIG.texts.coverTitle) {
+        coverEl.innerHTML = CONFIG.texts.coverTitle.replace(/\n/g, '<br>');
+      }
+
+      const letterHeadingEl = document.getElementById('letterHeadingText');
+      if (letterHeadingEl && CONFIG.texts.letterHeading) {
+        letterHeadingEl.textContent = CONFIG.texts.letterHeading;
+      }
+
+      const letterBodyEl = document.getElementById('letterBodyContainer');
+      if (letterBodyEl && Array.isArray(CONFIG.texts.letterParagraphs)) {
+        letterBodyEl.innerHTML = CONFIG.texts.letterParagraphs
+          .map(text => `<p>${text}</p>`)
+          .join('');
+      }
+
+      const bouquetTextEl = document.getElementById('bouquetTextContent');
+      if (bouquetTextEl && CONFIG.texts.bouquetText) {
+        bouquetTextEl.textContent = CONFIG.texts.bouquetText;
+      }
+
+      ['photo1', 'photo2', 'photo3'].forEach(key => {
+        let savedDataUrl = '';
+        try {
+          savedDataUrl = localStorage.getItem(STORAGE_PREFIX + key) || '';
+        } catch (err) {
+          savedDataUrl = '';
+        }
+
+        const configUrl = (CONFIG.photos[key] || '').trim();
+
+        if (savedDataUrl) {
+          renderPhotoInSlot(key, savedDataUrl, configUrl);
+        } else if (configUrl) {
+          renderPhotoInSlot(key, configUrl, '');
+        }
+      });
+    }
+
+    function triggerPhotoUpload(slotKey) {
+      activePhotoSlotKey = slotKey;
+      const input = document.getElementById('photoFileInput');
+      input.value = '';
+      input.click();
+    }
+
+    document.getElementById('photoFileInput').addEventListener('change', function (event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file || !activePhotoSlotKey) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const tempImg = new Image();
+        tempImg.onload = function () {
+          const maxSide = 760;
+          let width = tempImg.width;
+          let height = tempImg.height;
+
+          if (width > maxSide || height > maxSide) {
+            if (width > height) {
+              height = Math.round((height * maxSide) / width);
+              width = maxSide;
+            } else {
+              width = Math.round((width * maxSide) / height);
+              height = maxSide;
+            }
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(tempImg, 0, 0, width, height);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+          renderPhotoInSlot(activePhotoSlotKey, compressedDataUrl);
+
+          try {
+            localStorage.setItem(STORAGE_PREFIX + activePhotoSlotKey, compressedDataUrl);
+            showToast('Фото добавлено и сохранено');
+          } catch (err) {
+            showToast('Фото добавлено в рамку');
+          }
+        };
+        tempImg.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    /* ========================================================================
+       4. ИНТЕРАКТИВНЫЕ СВЕЧИ НА ТОРТЕ
+       ======================================================================== */
+    let areCandlesBlownOut = false;
+
+    function toggleCandles() {
+      const cakeEl = document.getElementById('interactiveCake');
+      const hintEl = document.getElementById('cakeHintText');
+      areCandlesBlownOut = !areCandlesBlownOut;
+
+      if (areCandlesBlownOut) {
+        cakeEl.classList.add('candles-out');
+        hintEl.textContent = 'Желание загадано — нажми, чтобы зажечь снова';
+        showToast('Свечи задуты! Пусть сбудется всё задуманное, Диас');
+      } else {
+        cakeEl.classList.remove('candles-out');
+        hintEl.textContent = 'Нажми на торт, чтобы задуть свечи';
+      }
+    }
+
+    /* ========================================================================
+       5. ВИНИЛОВЫЙ ПРОИГРЫВАТЕЛЬ С ТОНАРМОМ И МЯГКИМ СИНТЕЗАТОРОМ
+       ======================================================================== */
+    let audioCtx = null;
+    let isPlayingMusic = false;
+    let melodyTimer = null;
+    let notesVisualTimer = null;
+    let currentNoteIndex = 0;
+
+    const BIRTHDAY_MELODY = [
+      { freq: 261.63, dur: 0.35 },
+      { freq: 261.63, dur: 0.25 },
+      { freq: 293.66, dur: 0.55 },
+      { freq: 261.63, dur: 0.55 },
+      { freq: 349.23, dur: 0.55 },
+      { freq: 329.63, dur: 0.95 },
+
+      { freq: 261.63, dur: 0.35 },
+      { freq: 261.63, dur: 0.25 },
+      { freq: 293.66, dur: 0.55 },
+      { freq: 261.63, dur: 0.55 },
+      { freq: 392.00, dur: 0.55 },
+      { freq: 349.23, dur: 0.95 },
+
+      { freq: 261.63, dur: 0.35 },
+      { freq: 261.63, dur: 0.25 },
+      { freq: 523.25, dur: 0.55 },
+      { freq: 440.00, dur: 0.55 },
+      { freq: 349.23, dur: 0.55 },
+      { freq: 329.63, dur: 0.55 },
+      { freq: 293.66, dur: 0.95 },
+
+      { freq: 466.16, dur: 0.35 },
+      { freq: 466.16, dur: 0.25 },
+      { freq: 440.00, dur: 0.55 },
+      { freq: 349.23, dur: 0.55 },
+      { freq: 392.00, dur: 0.55 },
+      { freq: 349.23, dur: 1.15 }
+    ];
+
+    function playSynthNote(freq, duration) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime;
+
+      const oscMain = audioCtx.createOscillator();
+      const oscWarm = audioCtx.createOscillator();
+      const filter = audioCtx.createBiquadFilter();
+      const gainNode = audioCtx.createGain();
+
+      oscMain.type = 'sine';
+      oscMain.frequency.setValueAtTime(freq, now);
+
+      oscWarm.type = 'triangle';
+      oscWarm.frequency.setValueAtTime(freq * 0.5, now);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(950, now);
+
+      gainNode.gain.setValueAtTime(0.001, now);
+      gainNode.gain.exponentialRampToValueAtTime(0.16, now + 0.04);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+      oscMain.connect(filter);
+      oscWarm.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscMain.start(now);
+      oscWarm.start(now);
+      oscMain.stop(now + duration + 0.05);
+      oscWarm.stop(now + duration + 0.05);
+    }
+
+    function scheduleNextNote() {
+      if (!isPlayingMusic) return;
+
+      const note = BIRTHDAY_MELODY[currentNoteIndex];
+      playSynthNote(note.freq, note.dur);
+
+      currentNoteIndex = (currentNoteIndex + 1) % BIRTHDAY_MELODY.length;
+      const pauseBetween = currentNoteIndex === 0 ? 750 : 60;
+
+      melodyTimer = setTimeout(scheduleNextNote, note.dur * 1000 + pauseBetween);
+    }
+
+    function spawnFloatingNote() {
+      const layer = document.getElementById('musicNotesLayer');
+      if (!layer) return;
+
+      const symbols = ['♪', '♫', '♩'];
+      const noteEl = document.createElement('span');
+      noteEl.className = 'floating-note';
+      noteEl.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+
+      const startLeft = 32 + Math.random() * 34;
+      const driftX = (Math.random() - 0.5) * 44;
+
+      noteEl.style.left = startLeft + '%';
+      noteEl.style.bottom = '36%';
+      noteEl.style.setProperty('--dx', driftX + 'px');
+
+      layer.appendChild(noteEl);
+      setTimeout(() => noteEl.remove(), 1800);
+    }
+
+    function toggleMusic() {
+      const discEl = document.getElementById('vinylDisc');
+      const tonearmEl = document.getElementById('vinylTonearm');
+      const labelEl = document.getElementById('vinylLabelText');
+      const statusEl = document.getElementById('vinylStatusText');
+
+      if (!isPlayingMusic) {
+        if (!audioCtx) {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          audioCtx = new AudioContextClass();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+
+        isPlayingMusic = true;
+        tonearmEl.classList.add('engaged');
+        discEl.classList.add('spinning');
+        labelEl.textContent = 'Пауза';
+        statusEl.textContent = 'Играет мелодия для Диаса';
+
+        setTimeout(() => {
+          if (isPlayingMusic) {
+            scheduleNextNote();
+            spawnFloatingNote();
+            notesVisualTimer = setInterval(spawnFloatingNote, 680);
+          }
+        }, 280);
+      } else {
+        isPlayingMusic = false;
+        tonearmEl.classList.remove('engaged');
+        discEl.classList.remove('spinning');
+        labelEl.textContent = 'Нажми';
+        statusEl.textContent = 'Пластинка на паузе';
+
+        if (melodyTimer) clearTimeout(melodyTimer);
+        if (notesVisualTimer) clearInterval(notesVisualTimer);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initPhotosAndTexts();
+    });
+  </script>
+</body>
+</html>
+```
